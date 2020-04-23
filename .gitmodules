@@ -1,0 +1,3 @@
+[submodule "plugins/glTF-Exporter"]
+	path = plugins/glTF-Exporter
+	url = https://github.com/AsoboStudio/FlightSim-glTF-exporter
