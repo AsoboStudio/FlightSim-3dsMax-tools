@@ -1,0 +1,1 @@
+CUSTOM_VIEWPORT_CATEGORY = "FlightSim"
