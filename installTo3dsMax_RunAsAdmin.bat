@@ -39,7 +39,7 @@ set /P N= :
 	echo :: Max version %_maxversion%
 	set StartupFile=FlightSim_OUTSOURCER_Startup.ms 
 
-	if not defined MSFS_SDP (
+	if not defined MSFS_SDK (
 		echo MSFS_SDK is NOT defined
 		goto noMSFS_SDK
 	)
