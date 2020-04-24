@@ -1,3 +1,4 @@
 #files
 *.pyc
 *.code-workspace
+syncWithPerforce.bat
