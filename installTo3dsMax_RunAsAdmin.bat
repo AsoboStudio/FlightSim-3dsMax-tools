@@ -37,7 +37,6 @@ set /P N= :
 	set DestDir="C:\Program Files\Autodesk\3ds Max %_maxversion%"
 	set ScriptDir=%DestDir%\scripts\FlightSimTools
 	echo :: Max version %_maxversion%
-	set StartupFile=FlightSim_OUTSOURCER_Startup.ms 
 
 	if not defined MSFS_SDK (
 		echo MSFS_SDK is NOT defined
@@ -46,7 +45,7 @@ set /P N= :
 	else
 	(
 		set ScriptDir="%MSFS_SDK%\Tools\3dsMax\FlightSimPackage\scripts"
-		set StartupFile=FlightSim_SDK_Startup.ms 
+		
 	)
 	:noMSFS_SDK
 	echo "No MSFS_SDK found... installing script in default Max installation folder"
@@ -60,7 +59,7 @@ set /P N= :
 	robocopy "%~dp0\plugins\glTF-Exporter\3ds Max\Public\%_maxversion%" %DestDir%\bin\assemblies *.* /S /R:0
 	if errorlevel 8 goto ErrorCopyPlug
 
-	robocopy "%~dp0\startup" %DestDir%\scripts\Startup %StartupFile% /S
+	robocopy "%~dp0\startup" %DestDir%\scripts\Startup %StartupFile% FlightSim_SDK_Startup.ms /S
 	if errorlevel 8 goto ErrorCopyPlug
 
 	echo :: Copying scripts files
