@@ -1,11 +1,6 @@
 @echo off
 setlocal enabledelayedexpansion
 
-if not defined MSFS_SDK (
-    echo MSFS_SDK is NOT defined
-	goto ErrorCopyPlug
-)
-
 echo Please enter your 3DSMAX version
 echo choose 1 for 2016
 echo choose 2 for 2017
@@ -23,26 +18,41 @@ set /P N= :
   
   :switch-case-N-1
     set _maxversion=2016
-	goto copy-objects
+	goto define-location
   :switch-case-N-2
     set _maxversion=2017
-	goto copy-objects
+	goto define-location
   :switch-case-N-3
     set _maxversion=2018
-	goto copy-objects
+	goto define-location
   :switch-case-N-4
     set _maxversion=2019
-	goto copy-objects
+	goto define-location
   :switch-case-N-5
 	set _maxversion=2020
-	goto copy-objects
+	goto define-location
 
-:copy-objects
+:define-location
 	set SourceDir="%~dp0"
 	set DestDir="C:\Program Files\Autodesk\3ds Max %_maxversion%"
+	set ScriptDir=%DestDir%\scripts\FlightSimTools
 	echo :: Max version %_maxversion%
-	set ScriptDir="%MSFS_SDK%\Tools\3dsMax\FlightSimPackage\scripts"
+	set StartupFile=FlightSim_OUTSOURCER_Startup.ms 
+
+	if not defined MSFS_SDP (
+		echo MSFS_SDK is NOT defined
+		goto noMSFS_SDK
+	)
+	else
+	(
+		set ScriptDir="%MSFS_SDK%\Tools\3dsMax\FlightSimPackage\scripts"
+		set StartupFile=FlightSim_SDK_Startup.ms 
+	)
+	:noMSFS_SDK
+	echo "No MSFS_SDK found... installing script in default Max installation folder"
 	
+
+:copy-objects	
 	echo :: Copying plug-in files
 	echo :: From: %SourceDir%
 	echo :: To: %DestDir%
@@ -50,7 +60,7 @@ set /P N= :
 	robocopy "%~dp0\plugins\glTF-Exporter\3ds Max\Public\%_maxversion%" %DestDir%\bin\assemblies *.* /S /R:0
 	if errorlevel 8 goto ErrorCopyPlug
 
-	robocopy "%~dp0\startup" %DestDir%\scripts\Startup FlightSim_SDK_Startup.ms /S
+	robocopy "%~dp0\startup" %DestDir%\scripts\Startup %StartupFile% /S
 	if errorlevel 8 goto ErrorCopyPlug
 
 	echo :: Copying scripts files
