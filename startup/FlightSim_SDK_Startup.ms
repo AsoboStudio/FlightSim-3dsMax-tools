@@ -1,7 +1,12 @@
 FlightSimPluginPath = systemTools.getEnvVariable "MSFS_SDK" + "Tools\3dsMax\FlightSimPackage\scripts"
 if FlightSimPluginPath == undefined then
 (
-messageBox ("The Microsoft Flight Simulator SDK is not properly installed.\nPlease re-run the installer to fix the issue.")
+    FlightSimPluginPath = pathConfig.appendPath (symbolicPaths.getPathValue(9)) "FlightSimTools"
+    EntryPoint = pathConfig.appendPath FlightSimPluginPath @"FlightSim_EntryPoint.ms"
+    if ((getfiles EntryPoint).count != 0) then
+    (
+        print("The Microsoft Flight Simulator SDK tools are not properly installed.\nPlease re-run the installer to fix the issue\n")
+    )   
 )
 else
 (
