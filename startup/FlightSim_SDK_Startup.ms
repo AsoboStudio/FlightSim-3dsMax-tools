@@ -6,7 +6,7 @@ if FlightSimPluginPath == undefined then
 )
 else
 (
-    FlightSimPluginPath = pathConfig.appendPath(FlightSimPluginPath  "Tools\3dsMax\FlightSimPackage\scripts")
+    FlightSimPluginPath = FlightSimPluginPath + "Tools\3dsMax\FlightSimPackage\scripts"
 )
 
 EntryPoint = pathConfig.appendPath FlightSimPluginPath @"FlightSim_EntryPoint.ms"
