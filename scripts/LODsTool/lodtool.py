@@ -12,7 +12,6 @@ max = MaxPlus.Core.EvalMAXScript
 import re
 
 from PySide2 import QtWidgets
-from PySide2 import QtCore
 from PySide2.QtUiTools import QUiLoader
 
 # to add module from parent folder
@@ -110,10 +109,11 @@ class LodTool(QtWidgets.QDialog):
         LOD_NUMBER = self.lod_slider.maximum()
 
     def on_slider_value_changed(self):
-        hide_all_lyr()
-        show_lod_lyr(self.lod_slider.value(), False)
+        rt.disableSceneRedraw()
+        hideAllLODs()
+        showLOD(self.lod_slider.value())
         self.tri_count_label.setText(str(TRIS_COUNT))
-        MaxPlus.ViewportManager.RedrawViewportsNow(MaxPlus.Animation.GetTime())
+        rt.enableSceneRedraw()
 
     def on_source_lod_value_changed(self):
         self.source_lod_index = self.source_lod.currentIndex()
@@ -160,31 +160,34 @@ class LodTool(QtWidgets.QDialog):
         rename_node_based_on_lod0()
 
 
-def show_lod_lyr(lod_value, lod_visibility):
-    print lod_value
-    print lod_visibility
-    lyr_root_name = UI.prefix_line.text() + str(lod_value)
-    UI.lod_label.setText("Tool is looking for: " + lyr_root_name)
-    lyr = rt.LayerManager.getLayerFromName(lyr_root_name)
-    if lyr is None:
-        log_verbose("MISSING LAYER: " + lyr_root_name)
-        return
-    lyr_children = [lyr]
-    lyr_children = utility.get_layer_children(lyr, lyr_children)
-    for child in lyr_children:
-        layer = MaxPlus.LayerManager.GetLayer(child.name)
-        layer_nodes = layer.GetNodes()
-        for n in layer_nodes:
-            n.UnhideObjectAndLayer(lod_visibility)
-        layer.Hide(lod_visibility)
-    global TRIS_COUNT
-    TRIS_COUNT = sdk_node.getTrisCount(sdk_layer.getAllNodeInLayerHierarchy(lyr))
-    log_clear()
+def setLodVisibility(lod_value, lod_visibility):
+    lyrPrefix = UI.prefix_line.text() + str(lod_value)
+    lyr = rt.LayerManager.getLayerFromName(lyrPrefix)
+    if lyr:
+        lyr.on = lod_visibility
+        if lod_visibility:
+            descendents = sdk_layer.getLayerDescendants([lyr])
+            for descendentLayer in descendents:
+                descendentLayer.on = lod_visibility
+                nodesInLayer = sdk_layer.getNodesInLayer(descendentLayer)
+                for n in nodesInLayer:
+                    rt.unhide(n)
+                global TRIS_COUNT
+                TRIS_COUNT = sdk_node.getTrisCount(sdk_layer.getAllNodeInLayerHierarchy(lyr))
+                log_clear()
+
+def showLOD(LODValue):
+    setLodVisibility(LODValue, True)
+    lyrPrefix = UI.prefix_line.text() + str(LODValue)
+    UI.lod_label.setText("Tool is looking for: " + lyrPrefix)
+    lyr = rt.LayerManager.getLayerFromName(lyrPrefix)
+    if not lyr:
+        log_verbose("MISSING LAYER: " + lyrPrefix)
 
 
-def hide_all_lyr():
+def hideAllLODs():
     for i in range(LOD_NUMBER + 1):
-        show_lod_lyr(i, True)
+        setLodVisibility(i, False)
 
 
 def set_new_copy_layer(n, curren_prefix, next_prefix):
@@ -571,3 +574,4 @@ def run():
     global UI
     UI = LodTool(ui_path)
     UI.show()
+

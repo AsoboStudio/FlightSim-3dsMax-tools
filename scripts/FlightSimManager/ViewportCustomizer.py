@@ -6,9 +6,6 @@ reload(sdkmenu)
 import PBRViewportManager.setupMenu as pbrviewportmenu
 reload(pbrviewportmenu)
 
-import MultiExporter.setupMenu as multiExporterMenu
-reload(multiExporterMenu)
-
 import FlightSimManager.Constants
 reload(FlightSimManager.Constants)
 
@@ -18,18 +15,21 @@ reload(validationsMenu)
 import Utilities.setupMenu as utilitiesMenu
 reload(utilitiesMenu)
 
-if rt.maxversion()[0]>20000:
-    import AnimationTool.setupMenu as animationToolMenu
-    reload(animationToolMenu)
 
-    import LODsTool.setupMenu as lodstool
-    reload(lodstool)
+import MultiExporter.setupMenu as multiExporterMenu
+reload(multiExporterMenu)
 
-    import AnimationExporter.setupMenu as animationExporterMenu
-    reload(animationExporterMenu)
+import AnimationTool.setupMenu as animationToolMenu
+reload(animationToolMenu)
 
-    import WiperTool.setupMenu as wiperMenu
-    reload(wiperMenu)
+import LODsTool.setupMenu as lodstool
+reload(lodstool)
+
+import AnimationExporter.setupMenu as animationExporterMenu
+reload(animationExporterMenu)
+
+import WiperTool.setupMenu as wiperMenu
+reload(wiperMenu)
 
 
 def installCustomizations():
@@ -49,12 +49,11 @@ def installCustomizations():
     sdkmenu.deleteCategoryCustomizations(FlightSimManager.Constants.CUSTOM_VIEWPORT_CATEGORY)
 
     pbrviewportmenu.installMenu()
-    validationsMenu.installMenu()
-    multiExporterMenu.installMenu()
+    validationsMenu.installMenu()    
 
     utilitiesMenu.installMenu()
-if rt.maxversion()[0]>20000:
     animationToolMenu.installMenu()
     lodstool.installMenu()
     animationExporterMenu.installMenu()
     wiperMenu.installMenu()
+    multiExporterMenu.installMenu()

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>564</width>
+    <width>418</width>
     <height>656</height>
    </rect>
   </property>
@@ -57,8 +57,8 @@
       <widget class="QLabel" name="label_6">
        <property name="text">
         <string>WARNING: 
-IT IS MANDATORY TO VALIDATE NODE AND LAYER 
-WITH VALIDATIONS TOOLS BEFORE TO USE THIS UTILITY</string>
+IT IS MANDATORY TO VALIDATE NODES AND LAYERS 
+WITH THE VALIDATION TOOL BEFORE USING THIS UTILITY</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -108,7 +108,7 @@ WITH VALIDATIONS TOOLS BEFORE TO USE THIS UTILITY</string>
       <widget class="QLabel" name="label_7">
        <property name="text">
         <string>this utility is intented to work with a hierachy of animated bones 
-that could evenutally be parents of UNSKINNED mesh</string>
+that could evenutally be the parents of UNSKINNED mesh</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>

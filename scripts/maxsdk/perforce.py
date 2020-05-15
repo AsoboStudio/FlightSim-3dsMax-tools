@@ -27,6 +27,14 @@ def P4add(filePath, changelistName="default"):
         # os.system('cmd /c "{0}"'.format(cmd))
         # print cmd
 
+def P4revert(filePath, changelistName="default"):
+    if os.path.exists(filePath):
+        cmd = "p4 revert -c {0} -w {1}".format(changelistName, filePath)
+        process = subprocess.Popen(cmd, shell=True)
+        process.wait()
+        os.system('cmd /c "{0}"'.format(cmd))
+        print cmd
+
 def P4createChangelist(changelistName):
     #empthy changelist
     if changelistName:

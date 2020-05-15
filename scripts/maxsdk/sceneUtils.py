@@ -3,14 +3,18 @@ import os
 import pymxs
 import re
 from pymxs import runtime as rt
-
+from maxsdk import layer
 
 def getAllObjects():
     return rt.objects
 
 def getSelectedObjects():
-    explorer = rt.SceneExplorerManager.GetActiveExplorer()
-    return explorer.SelectedItems()
+    return rt.getCurrentSelection()
+
+def getSceneRootNode():
+    rootScene = rt.rootScene
+    worldSubAnim = rootScene[rt.Name('world')]
+    return worldSubAnim.object
 
 # returns each root of a collection of object
 def getAllRoots(objects):
@@ -54,23 +58,41 @@ def getLODLevel(obj):
         return None
 
 def getLODValue(obj):
-    return rt.getUserProp(obj,"flightsim_lod_value")
+    try:
+        return float(rt.getUserProp(obj,"flightsim_lod_value"))
+    except:
+        return None
     
+defaultLODValues = [70.0, 40.0, 20.0, 10.0]
 
+def getDefaultLODValue(lodLevel):
+    defaultCount = len(defaultLODValues)
+    if(lodLevel >= defaultCount):
+        return defaultLODValues[defaultCount-1]
+    if(lodLevel < 0):
+        return defaultLODValues[0]
+    return defaultLODValues[lodLevel]
+    
 
 # Collapse and expand foldout in the hierarchy        
 def collapseAllAndExpandSelected():
     explorer = rt.SceneExplorerManager.GetActiveExplorer()
-    explorer.CollapseAll()
-    explorer.ExpandSelected()
-    rt.macros.run("Scene Explorer","SEFindSelected")
-    rt.macros.run("Scene Explorer","SEFindSelected") # we run it twice to make sure it focuses on the hierarchy correctly
+    if explorer is not None :
+        explorer.CollapseAll()
+        explorer.ExpandSelected()
+        rt.macros.run("Scene Explorer","SEFindSelected")
+        rt.macros.run("Scene Explorer","SEFindSelected") # we run it twice to make sure it focuses on the hierarchy correctly
 
 
 def sortObjectsByLODLevels(objects):
     newList = sorted(objects, key=lambda x: getLODLevel(x) , reverse=False)
     return newList
 
+def selectLayers(layers):
+    obj = []
+    for lay in layers:
+        obj += layer.getNodesInLayer(lay)
+    rt.select(obj)
 
 ######################
 ####### Gizmo ########
@@ -190,7 +212,7 @@ def convertGizmosToAsoboGizmos(gizmos):
 ######################
 ####### Filter #######
 ######################
-def filterLODLevel(objects, lodLevel):
+def filterLODLevel(objects, lodLevel = "[0-9]+"):
     newObjects = []
     for o in objects:
         if(re.match(".+_LOD" + str(lodLevel) + "$",o.name)):
@@ -260,6 +282,8 @@ def copyHierarchy(rootNode):
         copyChild = copyHierarchy(child)
         copyChild.parent = current
     return current
+
+getSceneRootNode()
 
 
 

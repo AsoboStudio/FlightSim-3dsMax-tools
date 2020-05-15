@@ -306,8 +306,7 @@ version:0.1
 		/* 3dsmax strange bahviour : getTechniqueName and technique have indices starting from 1 and 0 respectivily*/
 		
 		local numTech = delegate.getNumberOfTechniques()
--- 		format "number of technique is %\n" numTech
-		
+		-- format "number of technique is %\n" numTech
 		for i=0 to (numTech-1) do
 		(
 			if delegate.getTechniqueName (i+1) == techName then
@@ -818,7 +817,9 @@ version:0.1
 	
 	rollout paramsUI "Parameters"
 	(
-		editText guid offset:[0, 0] align:#left enabled:false  width:250
+		local maxWidth = paramsUI.width
+		local halfMaxWidth = maxWidth * 0.4
+		editText guid offset:[0, 0] align:#left enabled:false  width:maxWidth
 		
         checkbox uniqueInContainer "Unique In Container Inheritance"  offset:[0,0] align:#left \
 			tooltip:"Only in presence of duplicated container, and need a unique name"
@@ -832,7 +833,7 @@ version:0.1
 		colorpicker emissive " Emissive:" modal:false fieldWidth:60 height:20 align:#left offset:[8,0] \
 			tooltip:"The RGB components of the emissive color of the material. These values are linear. If an emissiveTexture is specified, this value is multiplied with the texel values."
 
-		groupBox alphaModeBox "Alpha Mode:" height:90 width:119
+		groupBox alphaModeBox "Alpha Mode:" height:90 width:halfMaxWidth
 		radioButtons alphaMode "" labels:#("OPAQUE","MASK","BLEND","DITHER") columns:1 align:#left offset:[10,-80] \
 			tooltip:#(
 				"OPAQUE - The rendered output is fully opaque and any alpha value is ignored.",
@@ -841,7 +842,7 @@ version:0.1
 				"DITHER - The rendered output is blend with dithering dot patern"
 				)
 
-		groupBox renderFlagBox "Render Param:" height:110 width:119 offset:[0,10]
+		groupBox renderFlagBox "Render Param:" height:110 width:halfMaxWidth offset:[0,10]
 		spinner drawOrder "Draw Order:" type:#integer range:[-999,999,0] fieldWidth:30 offset:[10,-98] align:#left\
 			tooltip:"Draw Order Offset, to manually sort decals draw order for example"
 		checkbox noCastShadow "no Cast Shadow" offset:[10,0] align:#left \
@@ -851,13 +852,13 @@ version:0.1
 		checkbox responsiveAA "Responsive AA" offset:[10,0] align:#left \
 			tooltip:"The responsiveAA property specifies the behaviour of material regarding temporal Anti Aliasing. When this value is false, temporal AA is enabled. When this value is true, temporal AA is disabled ."
 
-		groupBox gameplayBox "Gameplay param:" height:58 width:119 offset:[0,20]
+		groupBox gameplayBox "Gameplay param:" height:58 width:halfMaxWidth offset:[0,20]
 		checkbox collisionMaterial "Collision Material" offset:[10,-46] align:#left tooltip:"Collision Material"
 		checkbox roadMaterial "Road Material" offset:[10,0] align:#left \
 		tooltip:"Road Material"
 
-		groupBox UVParams "UVs options:" height:80 width:119 offset:[0,5]
-		groupBox UVClampParams "UV Clamp:" height:40 width:109 offset:[4,-50]
+		groupBox UVParams "UVs options:" height:80 width:halfMaxWidth offset:[0,5]
+		groupBox UVClampParams "UV Clamp:" height:40 width:(halfMaxWidth-10) offset:[4,-50]
 		checkbox AOUseUV2 "AO Use UV2" offset:[10,-63] align:#left \
 			tooltip:"AO use UV2"
 		checkbox ClampUVX "X" offset:[10,15] align:#left \
@@ -886,7 +887,7 @@ version:0.1
 			tooltip:"Blend Threshold need blendMask Tex"
 
 		local decalOffsetY = 90
-		groupBox decalBox "Decal per component blend factors:" height:85 width:250 offset:[0, decalOffsetY]
+		groupBox decalBox "Decal per component blend factors:" height:85 width:maxWidth offset:[0, decalOffsetY]
 		spinner decalColorFactor "Color:" 					range:[0,1,1] scale:0.01 fieldWidth:40 align:#right offset:[-50,-70] across:2
 		spinner decalRoughnessFactor "Roughness:" 	range:[0,1,1] scale:0.01 fieldWidth:40 align:#right offset:[-80,-70]
 		spinner decalMetalFactor "Metal:" 					range:[0,1,1] scale:0.01 fieldWidth:40 align:#right offset:[-50,0] across:2
@@ -895,19 +896,19 @@ version:0.1
 		spinner decalEmissiveFactor "Emissive:" 			range:[0,1,1] scale:0.01 fieldWidth:40 align:#right offset:[-80,0]
 
 		local SSSBoxOffsetY = -80.0
-		groupBox SSSbox "SSS parameters:" height:50 width:250 offset:[0, SSSBoxOffsetY]
+		groupBox SSSbox "SSS parameters:" height:50 width:maxWidth offset:[0, SSSBoxOffsetY]
 		colorpicker SSSColor "SSS Color" modal:false fieldWidth:30 height:20 align:#right offset:[-50,SSSBoxOffsetY+45] across:2 \
 			tooltip:"The RGBA components of the SSS color of the material. These values are linear. If a SSSTexture is specified, this value is multiplied with the texel values."
 
 		local GlassBoxOffsetY = -80
-		groupBox GlassBox "Glass parameters:" height:64 width:250 offset:[-160, GlassBoxOffsetY]
+		groupBox GlassBox "Glass parameters:" height:64 width:maxWidth offset:[-160, GlassBoxOffsetY]
 		spinner glassReflectionMaskFactor "Glass Reflection Mask Factor:" range:[0.000,1.000,0.000] scale:0.01 fieldWidth:40 offset:[-80, -52] align:#right \
 			tooltip:"Glass Reflection Mask Factor"
 		spinner glassDeformationFactor "Glass Deformation Factor:" range:[0.000,1.000,0.000] scale:0.01 fieldWidth:40 offset:[-80, 0] align:#right \
 			tooltip:"Glass Deformation Factor"
 
 		local ParallaxBoxOffsetY = -50
-		groupBox ParallaxBox "Parallax parameters:" height:130 width:250 offset:[0, ParallaxBoxOffsetY]
+		groupBox ParallaxBox "Parallax parameters:" height:130 width:maxWidth offset:[0, ParallaxBoxOffsetY]
 		spinner parallaxScale "Parallax scale:" range:[0.000,1.000,0.500] scale:0.01 fieldWidth:40 offset:[-150, -115] align:#right \
 			tooltip:"Parallax scale"
 		spinner roomSizeXScale "room SizeX Scale:" range:[0.01,10.000,0.500] scale:0.01 fieldWidth:40 offset:[-150, 0] align:#right \
@@ -919,7 +920,7 @@ version:0.1
 		checkbox corridor "Corridor" offset:[20, 0] align:#left tooltip:"Use as a corridor"
 
 		local fresnelBoxOffsetY = -90
-		groupBox fresnelBox "Fresnel parameters:" height:70 width:250 offset:[0, fresnelBoxOffsetY]
+		groupBox fresnelBox "Fresnel parameters:" height:70 width:maxWidth offset:[0, fresnelBoxOffsetY]
 		spinner fresnelFactor "Fresnel Factor:" range:[0.001,100.000,1.000] scale:0.01 fieldWidth:40 offset:[-80,-55] align:#right \
 			tooltip:"Fresnel Factor"
 		spinner fresnelOpacityOffset "Fresnel Opacity Offset:" range:[-1.0,1.0,0.000] scale:0.01 fieldWidth:40 offset:[-80, 0] align:#right \
@@ -1020,30 +1021,30 @@ version:0.1
 				decalOcclusionFactor.text = "Occlusion:"
 			)
 
-			if (matList[materialType.selection] == #Decal or matList[materialType.selection] == #GeoDecalFrosted) then
-			(
-				paramsUI.height = 650
-			)
-			else if(matList[materialType.selection] == #Glass) then -- glass
-			(
-				paramsUI.height = 600
-			)
-			else if(matList[materialType.selection] == #ParallaxWindow) then --parallax
-			(
-				paramsUI.height = 650
-			)
-			else if(matList[materialType.selection] == #Hair or matList[materialType.selection] == #SSS) then --SSS ou Hair
-			(
-				paramsUI.height = 650
-			)
-			else if(matList[materialType.selection] == #FresnelFade) then --fresnel fade
-			(
-				paramsUI.height = 650
-			)
-			else
-			(
-				paramsUI.height  = 650
-			)
+			--if (matList[materialType.selection] == #Decal or matList[materialType.selection] == #GeoDecalFrosted) then
+			--(
+			--	paramsUI.height = 650
+			--)
+			--else if(matList[materialType.selection] == #Glass) then -- glass
+			--(
+			--	paramsUI.height = 600
+			--)
+			--else if(matList[materialType.selection] == #ParallaxWindow) then --parallax
+			--(
+			--	paramsUI.height = 650
+			--)
+			--else if(matList[materialType.selection] == #Hair or matList[materialType.selection] == #SSS) then --SSS ou Hair
+			--(
+			--	paramsUI.height = 650
+			--)
+			--else if(matList[materialType.selection] == #FresnelFade) then --fresnel fade
+			--(
+			--	paramsUI.height = 650
+			--)
+			--else
+			--(
+			--	paramsUI.height  = 650
+			--)
 		)
 
 		on materialType selected val do
@@ -1074,6 +1075,7 @@ version:0.1
 
 	rollout texturesUI "Textures"
 	(
+		local maxWidth = texturesUI.width
 		local btnStyle = (dotNetClass "System.Windows.Forms.FlatStyle").flat -- Flat / Popup / Standard / System
 		local btnColor = (dotnetclass "system.drawing.color").FromArgb 68 68 68
 		local btnFont = dotNetObject "System.Drawing.Font" "Microsoft Sans Serif" 9 (dotNetClass "System.Drawing.FontStyle").bold
@@ -1081,51 +1083,51 @@ version:0.1
 
 		dotnetcontrol	BaseColorTexBtn "system.windows.forms.button" \
 			AllowDrop:true FlatStyle:btnStyle backColor:btnColor font:btnFont \
-			width:300 height:32
+			width:maxWidth height:32
 
 		dotnetcontrol	OcclusionRoughnessMetallicTexBtn "system.windows.forms.button" \
 			AllowDrop:true FlatStyle:btnStyle backColor:btnColor font:btnFont \
-			width:300 height:32
+			width:maxWidth height:32
 
 		dotnetcontrol	NormalTexBtn "system.windows.forms.button" \
 			AllowDrop:true FlatStyle:btnStyle backColor:btnColor font:btnFont \
-			width:300 height:32
+			width:maxWidth height:32
 
 		dotnetcontrol	EmissiveTexBtn "system.windows.forms.button" \
 			AllowDrop:true FlatStyle:btnStyle backColor:btnColor font:btnFont \
-			width:300 height:32
+			width:maxWidth height:32
 
 		dotnetcontrol	DetailColorTexBtn "system.windows.forms.button" \
 			AllowDrop:true FlatStyle:btnStyle backColor:btnColor font:btnFont \
-			width:300 height:32
+			width:maxWidth height:32
 
 		dotnetcontrol	DetailOcclusionRoughnessMetallicTexBtn "system.windows.forms.button" \
 			AllowDrop:true FlatStyle:btnStyle backColor:btnColor font:btnFont \
-			width:300 height:32
+			width:maxWidth height:32
 
 		dotnetcontrol	DetailNormalTexBtn "system.windows.forms.button" \
 			AllowDrop:true FlatStyle:btnStyle backColor:btnColor font:btnFont \
-			width:300 height:32
+			width:maxWidth height:32
 
 		dotnetcontrol	BlendMaskTexBtn "system.windows.forms.button" \
 			AllowDrop:true FlatStyle:btnStyle backColor:btnColor font:btnFont \
-			width:300 height:32
+			width:maxWidth height:32
 
 		dotnetcontrol	WetnessAOTexBtn "system.windows.forms.button" \
 			AllowDrop:true FlatStyle:btnStyle backColor:btnColor font:btnFont \
-			width:300 height:32
+			width:maxWidth height:32
 
 		dotnetcontrol	DirtTexBtn "system.windows.forms.button" \
 			AllowDrop:true FlatStyle:btnStyle backColor:btnColor font:btnFont \
-			width:300 height:32
+			width:maxWidth height:32
 
 		dotnetcontrol	HeightMapTexBtn "system.windows.forms.button" \
 			AllowDrop:true FlatStyle:btnStyle backColor:btnColor font:btnFont \
-			width:300 height:32
+			width:maxWidth height:32
 
 		dotnetcontrol	OpacityTexBtn "system.windows.forms.button" \
 			AllowDrop:true FlatStyle:btnStyle backColor:btnColor font:btnFont \
-			width:300 height:32
+			width:maxWidth height:32
 
 
 		-- variable contenant le nom de la texture cibl�e lors du clic droit
@@ -1209,40 +1211,11 @@ version:0.1
 
 			case matList[this.materialType] of
 			(
-				--1:
-				--2:
-				#Decal:
-				(
-				    this.texturesUI.DetailColorTexBtn.enabled = false
-					this.texturesUI.DetailColorTexBtn.text = "disabled"
-					this.texturesUI.DetailNormalTexBtn.enabled = false
-					this.texturesUI.DetailNormalTexBtn.text = "disabled"
-					this.texturesUI.DetailOcclusionRoughnessMetallicTexBtn.enabled = false
-					this.texturesUI.DetailOcclusionRoughnessMetallicTexBtn.text = "disabled"
-					this.texturesUI.BlendMaskTexBtn.enabled = false
-					this.texturesUI.BlendMaskTexBtn.text = "disabled"
-				)
-				#PortHole:
-				(
-				    this.texturesUI.DetailColorTexBtn.enabled = false
-					this.texturesUI.DetailColorTexBtn.text = "disabled"
-					this.texturesUI.DetailNormalTexBtn.enabled = false
-					this.texturesUI.DetailNormalTexBtn.text = "disabled"
-					this.texturesUI.DetailOcclusionRoughnessMetallicTexBtn.enabled = false
-					this.texturesUI.DetailOcclusionRoughnessMetallicTexBtn.text = "disabled"
-					this.texturesUI.BlendMaskTexBtn.enabled = false
-					this.texturesUI.BlendMaskTexBtn.text = "disabled"
-				)
 				#Windshield: --WindShield
 				(
 					this.texturesUI.WetnessAOTexBtn.enabled = true
 					this.texturesUI.WetnessAOTexBtn.text = "Wiper Mask (RG)"
 				)
-				--4:
-				--5:
-				--(
-
-				--)
 				#GeoDecalFrosted: --GeoDecalFrosted
 				(
 					this.texturesUI.BlendMaskTexBtn.enabled = false
@@ -1536,11 +1509,10 @@ version:0.1
 		)
 
 		fn loadLinked filename basename =
-		(
+		(			
 			if basename == "BaseColor"  and filename!=undefined	then
-			(
--- 				filename	=	(pathconfig.convertPathToAbsolute 	(pathconfig.appendpath 	(pathConfig.getCurrentProjectFolder())	filename	)	)
-
+			(				
+				-- filename	=	(pathconfig.convertPathToAbsolute 	(pathconfig.appendpath 	(pathConfig.getCurrentProjectFolder())	filename	)	)
 				local cpath = getFilenamePath filename
 				local cname = getFilenameFile filename
 				local	ctype = getFilenameType	filename

@@ -54,7 +54,8 @@ def exportLodPreset(exportPath, mName, lod):
     param.optimizeAnimations = True
     param.animgroupExportNonAnimated = True
     param.enableASBAnimationRetargeting = True
-
+    param.removeNamespaces = True
+    param.removeLodPrefix = True
     try:
         BabylonPYMXS.runBabylonExporter(param, False)
         #print "exported lod {1} of {0}".format(lod, mName)

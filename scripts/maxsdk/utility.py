@@ -480,3 +480,11 @@ def get_asobo_folder():
 
 def attachToMax(widget):
     MaxPlus.AttachQWidgetToMax(widget)
+
+
+
+def convertRelativePathToAbsolute(relativePath, startingPath):
+    return rt.pathConfig.resolvePathSymbols(os.path.join(startingPath, relativePath))
+
+def convertAbsolutePathToRelative(absolutePath, relativeTo):
+    return rt.pathConfig.convertPathToRelativeTo(absolutePath, relativeTo)

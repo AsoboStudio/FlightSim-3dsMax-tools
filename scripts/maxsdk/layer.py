@@ -79,21 +79,26 @@ def getAllNodeInLayerHierarchy(rootLayer):
             result_list.append(n)
     return result_list
 
-def getNodesInLayer(lay):
+def getDependentsOfLayer(lay):
     result = []
     layerRT = lay.layerAsRefTarg
     lyr_nodes_children = rt.refs.dependents(layerRT)
     for n in lyr_nodes_children:
-        cOf = rt.superClassOf(n)
-        if( cOf != rt.ReferenceTarget and cOf != rt.Matrix3Controller ):
+        if(rt.isvalidnode(n) and n not in result):
             result.append(n)
     return result
 
-
+def getNodesInLayer(lay):
+    result = []
+    lay.nodes(pymxs.mxsreference(result))
+    return result
 
 def getSelectedLayer():
-    exp = rt.SceneExplorerManager.GetActiveExplorer()
-    layer = exp.SelectedItems()
+    explorer = rt.SceneExplorerManager.GetActiveExplorer()
+    if (explorer == None):
+        layer = rt.getCurrentSelection()
+    else:
+        layer = explorer.SelectedItems()
     count = rt.getProperty(layer, "count")
     if count <= 0:
         rt.messageBox("Please select a layer")
@@ -105,3 +110,5 @@ def deleteAllEmptyLayerHierarchies():
     layers = getAllRootLayer()
     for lay in layers:
         rt.layerManager.deleteLayerHierarchy(lay.name)
+
+
