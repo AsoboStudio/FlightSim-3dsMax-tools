@@ -1,8 +1,6 @@
 if not NitrousGraphicsManager.IsEnabled() then
 	messageBox "Flight Simulator Material works in Direct3D 11 mode only, please switch viewport display driver.\n*Customize/Preferences/Viewports/Choose Driver...*" title:"Flight Simulator" beep:true
 
-
-
 rcmenu FlightSimMaterialRCMenuTex
 (
 	menuItem rc_display "Display" enabled:false
@@ -329,114 +327,49 @@ version:0.1
             #Standard:
             (
                 --format "SETTING STANDARD\n"
-                delegate.effectFile = pathConfig.appendPath curPath @"Fx/FlightSimMaterial_Standard.fx"
-				
-                if this.doubleSided then
-                (
-                    setShaderTechniqueByName("Tech_Base")
-                )
-                else
-                (
-                    setShaderTechniqueByName("Tech_TwoSide")
-                )
+				delegate.effectFile = pathConfig.appendPath curPath @"Fx/FlightSimMaterial_Standard.fx"
+				setShaderTechniqueByName("Tech_Base")
             )
-			#Decal:
+                #Decal:
             (
                 --format "SETTING DECAL \n"
-                delegate.effectFile = pathConfig.appendPath curPath @"Fx/FlightSimMaterial_Decal.fx"
-				
-                if this.doubleSided then
-                (
-                    setShaderTechniqueByName("Tech_Decal")
-                )
-                else
-                (
-                    setShaderTechniqueByName("Tech_DecalTwoSide")
-                )
+				delegate.effectFile = pathConfig.appendPath curPath @"Fx/FlightSimMaterial_Decal.fx"
+				setShaderTechniqueByName("Tech_Decal")
             )
             #Windshield:
             (
-                delegate.effectFile = pathConfig.appendPath curPath @"Fx/FlightSimMaterial_Standard.fx"
-                if this.doubleSided then
-                (
-                    setShaderTechniqueByName("Tech_Base")
-                )
-                else
-                (
-                    setShaderTechniqueByName("Tech_TwoSide")
-                )
+				delegate.effectFile = pathConfig.appendPath curPath @"Fx/FlightSimMaterial_Standard.fx"
+				setShaderTechniqueByName("Tech_Base")
             )
             #PortHole:
             (
-                delegate.effectFile = pathConfig.appendPath curPath @"Fx/FlightSimMaterial_Standard.fx"
-                if this.doubleSided then
-                (
-                    setShaderTechniqueByName("Tech_Base")
-                )
-                else
-                (
-                    setShaderTechniqueByName("Tech_TwoSide")
-                )
+				delegate.effectFile = pathConfig.appendPath curPath @"Fx/FlightSimMaterial_Standard.fx"
+				setShaderTechniqueByName("Tech_Base")
             )
             #Glass:
             (
-                delegate.effectFile = pathConfig.appendPath curPath @"Fx/FlightSimMaterial_Standard.fx"
-                if this.doubleSided then
-                (
-                    setShaderTechniqueByName("Tech_Base")
-                )
-                else
-                (
-                    setShaderTechniqueByName("Tech_TwoSide")
-                )
+				delegate.effectFile = pathConfig.appendPath curPath @"Fx/FlightSimMaterial_Standard.fx"
+				setShaderTechniqueByName("Tech_Base")
             )
             #GeoDecalFrosted:
             (
-                delegate.effectFile = pathConfig.appendPath curPath @"Fx/FlightSimMaterial_Standard.fx"
-                if this.doubleSided then
-                (
-                    setShaderTechniqueByName("Tech_Base")
-                )
-                else
-                (
-                    setShaderTechniqueByName("Tech_TwoSide")
-                )
+				delegate.effectFile = pathConfig.appendPath curPath @"Fx/FlightSimMaterial_Standard.fx"
+				setShaderTechniqueByName("Tech_Base")
             )
             #ClearCoat:
             (
-                delegate.effectFile = pathConfig.appendPath curPath @"Fx/FlightSimMaterial_Standard.fx"
-                if this.doubleSided then
-                (
-                    setShaderTechniqueByName("Tech_Base")
-                )
-                else
-                (
-                    setShaderTechniqueByName("Tech_TwoSide")
-                )
+				delegate.effectFile = pathConfig.appendPath curPath @"Fx/FlightSimMaterial_Standard.fx"
+				setShaderTechniqueByName("Tech_Base")
             )
             #ParallaxWindow:
             (
-                delegate.effectFile = pathConfig.appendPath curPath @"Fx/FlightSimMaterial_ParallaxWindow.fx"
-                if this.doubleSided then
-                (
-                    setShaderTechniqueByName("Tech_Parallax")
-                )
-                else
-                (
-                    setShaderTechniqueByName("Tech_Parallax_TwoSide")
-                )
+				delegate.effectFile = pathConfig.appendPath curPath @"Fx/FlightSimMaterial_ParallaxWindow.fx"
+				setShaderTechniqueByName("Tech_Parallax")
             )
             #Anisotropic:
             (
-                delegate.effectFile = pathConfig.appendPath curPath @"Fx/FlightSimMaterial_Standard.fx"
-                if this.doubleSided then
-                (
-                    setShaderTechniqueByName("Tech_Base")
-                )
-                else
-                (
-                    setShaderTechniqueByName("Tech_TwoSide")
-                )
+				delegate.effectFile = pathConfig.appendPath curPath @"Fx/FlightSimMaterial_Standard.fx"
+				setShaderTechniqueByName("Tech_Base")
             )
             #Invisible:
             (
@@ -445,27 +378,13 @@ version:0.1
             )
             #FakeTerrain:
             (
-                delegate.effectFile = pathConfig.appendPath curPath @"Fx/FlightSimMaterial_Standard.fx"
-                if this.doubleSided then
-                (
-                    setShaderTechniqueByName("Tech_Base")
-                )
-                else
-                (
-                    setShaderTechniqueByName("Tech_TwoSide")
-                )
+				delegate.effectFile = pathConfig.appendPath curPath @"Fx/FlightSimMaterial_Standard.fx"
+				setShaderTechniqueByName("Tech_Base")
             )
             #FresnelFade:
             (
-                delegate.effectFile = pathConfig.appendPath curPath @"Fx/FlightSimMaterial_Standard.fx"
-               if this.doubleSided then
-                (
-                    setShaderTechniqueByName("Tech_Base")
-                )
-                else
-                (
-                    setShaderTechniqueByName("Tech_TwoSide")
-                )
+				delegate.effectFile = pathConfig.appendPath curPath @"Fx/FlightSimMaterial_Standard.fx"
+				setShaderTechniqueByName("Tech_Base")
             )
             #EnvironmentOccluder:
             (
@@ -476,7 +395,8 @@ version:0.1
             default:
             (
                 format "fallback in default status"
-                delegate.effectFile = pathConfig.appendPath curPath @"Fx/FlightSimMaterial_Standard.fx"
+				delegate.effectFile = pathConfig.appendPath curPath @"Fx/FlightSimMaterial_Standard.fx"
+				setShaderTechniqueByName("Tech_Base")
             )
 		)
 
@@ -497,7 +417,9 @@ version:0.1
 		materialType type:#integer default:1 ui:materialType animatable:false
 		
 		baseColor type:#point4 default:white ui:BaseColor animatable:false
-		emissive type:#point4 default:black ui:Emissive animatable:true
+		emissive type:#point4 default:black ui:Emissive animatable:false
+
+		dayNightCycle type:#boolean default:false ui:dayNightCycle animatable:false
 		
 		roughness type:#float default:1.0 ui:Roughness animatable:false
 		metallic type:#float default:1.0 ui:metallic animatable:false
@@ -512,6 +434,7 @@ version:0.1
 		detailNormalScale type:#float default:1.0 ui:detailNormalScale animatable:false
 		blendThreshold type:#float default:0.1 ui:blendThreshold animatable:false
 		doubleSided type:#boolean default:false ui:doubleSided animatable:false
+
 		
 		decalColorFactor type:#float default:1.0 ui:decalColorFactor animatable:false
 		decalRoughnessFactor type:#float default:1.0 ui:decalRoughnessFactor animatable:false
@@ -537,12 +460,15 @@ version:0.1
 		collisionMaterial type:#boolean default:false ui:collisionMaterial animatable:false
 		roadMaterial type:#boolean default:false ui:roadMaterial animatable:false
 		noCastShadow type:#boolean default:false ui:noCastShadow animatable:false
-		AOUseUV2 type:#boolean default:false ui:AOUseUV2 animatable:false
 		clampUVX type:#boolean default:false ui:clampUVX animatable:false
 		clampUVY type:#boolean default:false ui:clampUVY animatable:false
-		clampUVZ type:#boolean default:false ui:clampUVZ animatable:false
 
-		responsiveAA type:#boolean default:false ui:responsiveAA animatable:false
+		rainDropScale type:#float default:1.0 ui:rainDropScale animatable:false
+		wiperAnimState1 type:#float default:0.0 ui:wiperAnimState1 animatable:true
+		wiperAnimState2 type:#float default:0.0 ui:wiperAnimState2 animatable:true
+		wiperAnimState3 type:#float default:0.0 ui:wiperAnimState3 animatable:true
+		wiperAnimState4 type:#float default:0.0 ui:wiperAnimState4 animatable:true
+		
 
 		guid type:#string default:"00000000-0000-0000-0000-000000000000" ui:guid animatable:false
 
@@ -675,15 +601,7 @@ version:0.1
 		on SSSColor set val do
 		(
 			animate off delegate.p_SSSColorFactor = val
-		)
-		
-		on doubleSided set val do
-		(	
-			--print "setting double sided funct"
-			--format "this.doubleSided = % \n" this.
-			---todo: optimize this changing just the techquinques
-			loadShader()
-		)
+		)		
 	)
 	
 	parameters textures rollout:texturesUI
@@ -842,34 +760,31 @@ version:0.1
 				"DITHER - The rendered output is blend with dithering dot patern"
 				)
 
-		groupBox renderFlagBox "Render Param:" height:110 width:halfMaxWidth offset:[0,10]
-		spinner drawOrder "Draw Order:" type:#integer range:[-999,999,0] fieldWidth:30 offset:[10,-98] align:#left\
+		groupBox renderFlagBox "Render Param:" height:130 width:halfMaxWidth offset:[0,10]
+		spinner drawOrder "Draw Order:" type:#integer range:[-999,999,0] fieldWidth:30 offset:[10,-118] align:#left\
 			tooltip:"Draw Order Offset, to manually sort decals draw order for example"
-		checkbox noCastShadow "no Cast Shadow" offset:[10,0] align:#left \
-			tooltip:"no Cast Shadow"
+		checkbox noCastShadow "Don't cast shadows" offset:[10,0] align:#left \
+			tooltip:"Don't cast shadows"
 		checkbox doubleSided "Double Sided" offset:[10,0] align:#left \
 			tooltip:"The doubleSided property specifies whether the material is double sided. When this value is false, back-face culling is enabled. When this value is true, back-face culling is disabled and double sided lighting is enabled. The back-face must have its normals reversed before the lighting equation is evaluated."
-		checkbox responsiveAA "Responsive AA" offset:[10,0] align:#left \
-			tooltip:"The responsiveAA property specifies the behaviour of material regarding temporal Anti Aliasing. When this value is false, temporal AA is enabled. When this value is true, temporal AA is disabled ."
+		checkbox dayNightCycle "Day Night Cycle" offset:[10,0] align:#left \
+			tooltip:"The emissive will be related to the ingame Day Night Cycle. When this value is false the emissive is Always ON."
 
 		groupBox gameplayBox "Gameplay param:" height:58 width:halfMaxWidth offset:[0,20]
 		checkbox collisionMaterial "Collision Material" offset:[10,-46] align:#left tooltip:"Collision Material"
 		checkbox roadMaterial "Road Material" offset:[10,0] align:#left \
 		tooltip:"Road Material"
 
-		groupBox UVParams "UVs options:" height:80 width:halfMaxWidth offset:[0,5]
+		groupBox UVParams "UVs options:" height:60 width:halfMaxWidth offset:[0,5]
 		groupBox UVClampParams "UV Clamp:" height:40 width:(halfMaxWidth-10) offset:[4,-50]
-		checkbox AOUseUV2 "AO Use UV2" offset:[10,-63] align:#left \
-			tooltip:"AO use UV2"
-		checkbox ClampUVX "X" offset:[10,15] align:#left \
-		checkbox ClampUVY "Y" offset:[40,-19] across:2 align:#left \
-		checkbox ClampUVZ "Z" offset:[-80,-19] align:#left \
+		checkbox ClampUVX "U" offset:[10,-25] align:#left \
+		checkbox ClampUVY "V" offset:[40,-20] across:2 align:#left \
 
 		--groupBox usualMaterialBox "material param:" height:250 width:200
 		local usualMaterialOffsetY = -272
 		spinner roughness "Roughness:" range:[0,1,1] scale:0.01 fieldWidth:40 align:#right offset:[0,usualMaterialOffsetY] \
 			tooltip:"The roughness of the material. A value of 1.0 means the material is completely rough. A value of 0.0 means the material is completely smooth. This value is linear. If a metallicRoughnessTexture is specified, this value is multiplied with the roughness texel values."
-		spinner metallic "Metallic:" range:[0,1,1] scale:0.01 fieldWidth:40 align:#right \
+		spinner metallic "Metallic:" range:[0,1,1] scale:0.01 fieldWidth:40 align:#right offset:[0,usualMaterialOffsetY+20] \
 			tooltip:"The metalness of the material. A value of 1.0 means the material is a metal. A value of 0.0 means the material is a dielectric. Values in between are for blending between metals and dielectrics such as dirty metallic surfaces. This value is linear. If a metallicRoughnessTexture is specified, this value is multiplied with the metallic texel values."
 		spinner normalScale "Normal Scale:" range:[0,1,1] scale:0.01 fieldWidth:40 align:#right \
 			tooltip:"The scalar multiplier applied to each normal vector of the texture. This value is ignored if normalTexture is not specified."
@@ -877,10 +792,10 @@ version:0.1
 			tooltip:"When alphaMode is set to MASK the alphaCutoff property specifies the cutoff threshold. If the alpha value is greater than or equal to the alphaCutoff value then it is rendered as fully opaque, otherwise, it is rendered as fully transparent. alphaCutoff value is ignored for other modes."
 		spinner detailUVScale "Detail UV Scale:" range:[0.01,100,2] scale:0.01 fieldWidth:40 align:#right \
 			tooltip:"Detail UV Scale"
-		spinner detailUVOffsetX "Detail UV Offset X:" range:[-10.00,10.00,0.0] scale:0.01 fieldWidth:40 align:#right \
-			tooltip:"Detail UV Offset X"
-		spinner detailUVOffsetY "Detail UV Offset Y:" range:[-10.00,10.00,0.0] scale:0.01 fieldWidth:40 align:#right \
-			tooltip:"Detail UV Offset Y"
+		spinner detailUVOffsetX "Detail UV Offset U:" range:[-10.00,10.00,0.0] scale:0.01 fieldWidth:40 align:#right \
+			tooltip:"Detail UV Offset U"
+		spinner detailUVOffsetY "Detail UV Offset V:" range:[-10.00,10.00,0.0] scale:0.01 fieldWidth:40 align:#right \
+			tooltip:"Detail UV Offset V"
 		spinner detailNormalScale "Detail Normal Scale:" range:[0.00,1.00,1.0] scale:0.01 fieldWidth:40 align:#bottomright \
 			tooltip:"Detail Normal Scale"
 		spinner blendThreshold "Blend Threshold:" range:[0.001,1.000,0.100] scale:0.01 fieldWidth:40 align:#right \
@@ -923,10 +838,23 @@ version:0.1
 		groupBox fresnelBox "Fresnel parameters:" height:70 width:maxWidth offset:[0, fresnelBoxOffsetY]
 		spinner fresnelFactor "Fresnel Factor:" range:[0.001,100.000,1.000] scale:0.01 fieldWidth:40 offset:[-80,-55] align:#right \
 			tooltip:"Fresnel Factor"
-		spinner fresnelOpacityOffset "Fresnel Opacity Offset:" range:[-1.0,1.0,0.000] scale:0.01 fieldWidth:40 offset:[-80, 0] align:#right \
-			tooltip:"Fresnel Opacity Offset"		
+		spinner fresnelOpacityOffset "Fresnel Opacity Bias:" range:[-1.0,1.0,0.000] scale:0.01 fieldWidth:40 offset:[-80, 0] align:#right \
+			tooltip:"Fresnel Opacity Bias"
 			
+		spinner rainDropScale "Rain Drop Scale:" range:[0,100,1] scale:1 fieldWidth:40 offset:[0, -170] align:#right \
+			tooltip:"Rain Drop Scale:"
+			
+		spinner wiperAnimState1 "Wiper Animation State:" range:[0,1,0] scale:1 fieldWidth:40 offset:[0, 0] align:#right \
+			tooltip:"Wiper Animation State:"
 		
+		spinner wiperAnimState2 "Wiper2 Animation State:" range:[0,1,0] scale:1 fieldWidth:40 offset:[0, 0] align:#right \
+			tooltip:"Wiper Animation State:"
+		
+		spinner wiperAnimState3 "Wiper3 Animation State:" range:[0,1,0] scale:1 fieldWidth:40 offset:[0, 0] align:#right \
+			tooltip:"Wiper Animation State:"
+		
+		spinner wiperAnimState4 "Wiper4 Animation State:" range:[0,1,0] scale:1 fieldWidth:40 offset:[0, 0] align:#right \
+			tooltip:"Wiper Animation State:"
 		
 
 		fn updateUI =
@@ -935,12 +863,12 @@ version:0.1
 			roughness.enabled = not(matList[materialType.selection] == #Invisible or matList[materialType.selection] == #EnvironmentOccluder)
 			metallic.enabled = not(matList[materialType.selection] == #Invisible or matList[materialType.selection] == #EnvironmentOccluder)
 			normalScale.enabled = not(matList[materialType.selection] == #Invisible or matList[materialType.selection] == #EnvironmentOccluder)
-			blendThreshold.enabled = not(matList[materialType.selection] == #Invisible or matList[materialType.selection] ==#FresnelFade or matList[materialType.selection] == #EnvironmentOccluder)
+			blendThreshold.enabled = not(matList[materialType.selection] == #Invisible or matList[materialType.selection] ==#FresnelFade or matList[materialType.selection] == #EnvironmentOccluder or matList[materialType.selection] == #SSS)
 			doubleSided.enabled = not(matList[materialType.selection] == #Invisible or matList[materialType.selection] == #EnvironmentOccluder)
-			responsiveAA.enabled = not(matList[materialType.selection] == #Invisible or matList[materialType.selection] == #EnvironmentOccluder)
 
+			dayNightCycle.enabled = matList[materialType.selection] == #Standard
+			
 			UVParams.enabled = not(matList[materialType.selection] == #Invisible or matList[materialType.selection] == #EnvironmentOccluder)
-			AOUseUV2.enabled = not(matList[materialType.selection] == #Invisible or matList[materialType.selection] == #EnvironmentOccluder)
 			renderFlagBox.enabled = not(matList[materialType.selection] == #Invisible or matList[materialType.selection] == #EnvironmentOccluder)
 			drawOrder.enabled = not(matList[materialType.selection] == #Invisible or matList[materialType.selection] == #EnvironmentOccluder)
 			noCastShadow.enabled = not(matList[materialType.selection] == #Invisible or matList[materialType.selection] == #EnvironmentOccluder)
@@ -956,9 +884,9 @@ version:0.1
 			decalNormalFactor.visible = (matList[materialType.selection] == #Decal or matList[materialType.selection] == #GeoDecalFrosted)
 			decalEmissiveFactor.visible = (matList[materialType.selection] == #Decal or matList[materialType.selection] == #GeoDecalFrosted)
 
-			SSSbox.visible = (matList[materialType.selection] == #SSS or matList[materialType.selection] == #Hair)
+			SSSbox.visible = false --(matList[materialType.selection] == #SSS or matList[materialType.selection] == #Hair)
 			SSSColor.visible = (matList[materialType.selection] == #SSS or matList[materialType.selection] == #Hair)
-			SSSColor.enabled =(matList[materialType.selection] == #SSS or matList[materialType.selection] == #Hair)
+			SSSColor.enabled = false --(matList[materialType.selection] == #SSS or matList[materialType.selection] == #Hair)
 
 			GlassBox.visible = (matList[materialType.selection] == #Glass)
 			GlassBox.enabled = (matList[materialType.selection] == #Glass)
@@ -975,10 +903,10 @@ version:0.1
 			fresnelOpacityOffset.enabled = (matList[materialType.selection] == #FresnelFade)
 
 			--if parallax, we don't have a detail map.
-			detailUVScale.enabled = not(matList[materialType.selection] == #ParallaxWindow or matList[materialType.selection] == #Invisible or matList[materialType.selection] == #FresnelFade or matList[materialType.selection] == #EnvironmentOccluder)
-			detailUVOffsetX.enabled = not(matList[materialType.selection] == #ParallaxWindow or matList[materialType.selection] == #Invisible or matList[materialType.selection] == #FresnelFade or matList[materialType.selection] == #EnvironmentOccluder)
-			detailUVOffsetY.enabled = not(matList[materialType.selection] == #ParallaxWindow or matList[materialType.selection] == #Invisible or matList[materialType.selection] == #FresnelFade or matList[materialType.selection] == #EnvironmentOccluder)
-			detailNormalScale.enabled = not(matList[materialType.selection] == #ParallaxWindow or matList[materialType.selection] == #Invisible or matList[materialType.selection] == #FresnelFade or matList[materialType.selection] == #EnvironmentOccluder)
+			detailUVScale.enabled = not(matList[materialType.selection] == #ParallaxWindow or matList[materialType.selection] == #Invisible or matList[materialType.selection] == #FresnelFade or matList[materialType.selection] == #EnvironmentOccluder or matList[materialType.selection] == #SSS)
+			detailUVOffsetX.enabled = not(matList[materialType.selection] == #ParallaxWindow or matList[materialType.selection] == #Invisible or matList[materialType.selection] == #FresnelFade or matList[materialType.selection] == #EnvironmentOccluder or matList[materialType.selection] == #SSS)
+			detailUVOffsetY.enabled = not(matList[materialType.selection] == #ParallaxWindow or matList[materialType.selection] == #Invisible or matList[materialType.selection] == #FresnelFade or matList[materialType.selection] == #EnvironmentOccluder or matList[materialType.selection] == #SSS)
+			detailNormalScale.enabled = not(matList[materialType.selection] == #ParallaxWindow or matList[materialType.selection] == #Invisible or matList[materialType.selection] == #FresnelFade or matList[materialType.selection] == #EnvironmentOccluder or matList[materialType.selection] == #SSS)
 			ParallaxBox.visible = (matList[materialType.selection] == #ParallaxWindow)
 			parallaxScale.visible = (matList[materialType.selection] == #ParallaxWindow)
 			parallaxScale.enabled = (matList[materialType.selection] == #ParallaxWindow)
@@ -994,13 +922,22 @@ version:0.1
             UVClampParams.enabled = not(matList[materialType.selection] == #EnvironmentOccluder)
 			clampUVX.enabled = not(matList[materialType.selection] == #EnvironmentOccluder)
 			clampUVY.enabled = not(matList[materialType.selection] == #EnvironmentOccluder)
-			clampUVZ.enabled = not(matList[materialType.selection] == #EnvironmentOccluder)
 
 			gameplayBox.enabled = not(matList[materialType.selection] == #EnvironmentOccluder)
 
 
 			collisionMaterial.enabled = not(matList[materialType.selection] == #EnvironmentOccluder)
 			roadMaterial.enabled = not(matList[materialType.selection] == #EnvironmentOccluder)
+
+			rainDropScale.enabled = matList[materialType.selection] == #Windshield
+			wiperAnimState1.enabled = matList[materialType.selection] == #Windshield
+			wiperAnimState2.enabled = matList[materialType.selection] == #Windshield
+			wiperAnimState3.enabled = matList[materialType.selection] == #Windshield
+			wiperAnimState4.enabled = matList[materialType.selection] == #Windshield
+			wiperAnimState2.visible = false
+			wiperAnimState3.visible = false
+			wiperAnimState4.visible = false
+			
 
             if(paramsUI.guid.text == "00000000-0000-0000-0000-000000000000") then
             (
@@ -1020,31 +957,16 @@ version:0.1
 				decalEmissiveFactor.text = "Emissive:"
 				decalOcclusionFactor.text = "Occlusion:"
 			)
-
-			--if (matList[materialType.selection] == #Decal or matList[materialType.selection] == #GeoDecalFrosted) then
-			--(
-			--	paramsUI.height = 650
-			--)
-			--else if(matList[materialType.selection] == #Glass) then -- glass
-			--(
-			--	paramsUI.height = 600
-			--)
-			--else if(matList[materialType.selection] == #ParallaxWindow) then --parallax
-			--(
-			--	paramsUI.height = 650
-			--)
-			--else if(matList[materialType.selection] == #Hair or matList[materialType.selection] == #SSS) then --SSS ou Hair
-			--(
-			--	paramsUI.height = 650
-			--)
-			--else if(matList[materialType.selection] == #FresnelFade) then --fresnel fade
-			--(
-			--	paramsUI.height = 650
-			--)
-			--else
-			--(
-			--	paramsUI.height  = 650
-			--)
+			if (matList[materialType.selection] == #Windshield) then
+			(
+				metallic.value = 0
+				delegate.p_metallicFactor = 0
+			)
+			if (matList[materialType.selection] == #Glass) then
+			(
+				metallic.value = 0
+				delegate.p_metallicFactor = 0
+			)
 		)
 
 		on materialType selected val do
@@ -1191,6 +1113,7 @@ version:0.1
 					this.texturesUI.DetailNormalTexBtn.text = "Detail Normal"
 					this.texturesUI.DetailOcclusionRoughnessMetallicTexBtn.text = "Detail Occlusion (R), Roughness (G), Metallic (B)"
 					delegate.p_blendmaskEnabled = false
+					this.paramsUI.blendThreshold.enabled = false
 				)
 				else
 				(
@@ -1198,6 +1121,7 @@ version:0.1
 					this.texturesUI.DetailNormalTexBtn.text = "Secondary Normal"
 					this.texturesUI.DetailOcclusionRoughnessMetallicTexBtn.text = "Secondary Occ (R), Rough (G), Metal (B)"
 					delegate.p_blendmaskEnabled = true
+					this.paramsUI.blendThreshold.enabled = true
 				)
 
 				this.texturesUI.HeightMapTexBtn.enabled = false
@@ -1213,8 +1137,11 @@ version:0.1
 			(
 				#Windshield: --WindShield
 				(
+					this.texturesUI.EmissiveTexBtn.text = "Secondary Details(A)"
 					this.texturesUI.WetnessAOTexBtn.enabled = true
 					this.texturesUI.WetnessAOTexBtn.text = "Wiper Mask (RG)"
+					this.texturesUI.DetailColorTexBtn.text = "Details Scratch(R), Icing Mask(G), Fingerprints(B)"
+					this.texturesUI.DetailNormalTexBtn.text = "Icing Normal (use DetailMap UV)"
 				)
 				#GeoDecalFrosted: --GeoDecalFrosted
 				(
@@ -1759,7 +1686,7 @@ version:0.1
 	on create do
 	(
 		loadShader()
-		delegate.renderMaterial = undefined
+		-- delegate.renderMaterial = undefined -- this make 3dsmax crash in max2021
 	)
 
 	on postCreate do

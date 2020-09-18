@@ -10,9 +10,6 @@ bakeAnimation = None
 
 
 def exportLodPreset(exportPath, mName, lod):
-    #print "New Export instance"
-    #print "exporting {0} at lod {1}".format(mName, lod)
-
     exportName = rt.trimleft(mName, "pr_")
     exportFolder = exportPath + "\\"
     modelFolder = exportFolder + "model." + exportName
@@ -20,14 +17,12 @@ def exportLodPreset(exportPath, mName, lod):
     param = BabylonPYMXS.BabylonParameters(r"c:\\default", r"gltf")
 
     if exportedType == "Animation":
-        #print "use default exporter"
-        return
-        # outputPath = animationFolder
-        # rt.makedir(outputPath, all=True)
-        # param.outputPath = outputPath + "\\" + gltfAnimationName + ".gltf"
-        # param.animationExportType = rt.execute('(dotnetclass "BabylonExport.Entities.AnimationExportType").ExportOnly')
-        # param.outputPath = outputPath
-        # param.exportMaterials = False
+        outputPath = animationFolder
+        rt.makedir(outputPath, all=True)
+        param.outputPath = outputPath + "\\" + exportName + ".gltf"
+        param.animationExportType = rt.execute('(dotnetclass "BabylonExport.Entities.AnimationExportType").ExportOnly')
+        param.outputPath = outputPath
+        param.exportMaterials = False
     elif exportedType == "Model":
         outputPath = modelFolder
         rt.makedir(outputPath, all=True)
@@ -56,14 +51,12 @@ def exportLodPreset(exportPath, mName, lod):
     param.enableASBAnimationRetargeting = True
     param.removeNamespaces = True
     param.removeLodPrefix = True
+    # param.keepInstance = True
     try:
         BabylonPYMXS.runBabylonExporter(param, False)
-        #print "exported lod {1} of {0}".format(lod, mName)
-        # filePath = os.path.join(animationFolder, exportName)
-        # sdkperforce.P4edit(filePath + ".bin")
-        # sdkperforce.P4edit(filePath + ".gltf")
+
     except:
-        print "ERROR exporting lod {1} of {0}".format(lod, mName)
+        print("ERROR exporting lod {1} of {0}".format(lod, mName))
 
 
 def hideNodes(nodes):
@@ -81,8 +74,6 @@ def showLodInLayer(layerObject, lodValue):
 
 
 def exportScene(exportPath, bakeAnim, exportType):
-    #print "STARTING NEW BATCH INSTANCE"
-    #print "found {0} xref object".format(rt.objXRefMgr.recordCount)
     for k in range(1, rt.objXRefMgr.recordCount):
         rec = rt.objXRefMgr.GetRecord(k)
         rt.objXRefMgr.MergeRecordIntoScene(rec)
@@ -102,7 +93,7 @@ def exportScene(exportPath, bakeAnim, exportType):
             rt.append(presetLayer, mLayer)
 
     for pLayer in presetLayer:
-        print "evaluating preset layer {0}".format(pLayer.name)
+        print("evaluating preset layer {0}".format(pLayer.name))
         lodNodes = rt.Array()
         theNodes = []
         pLayer.nodes(pymxs.mxsreference(theNodes))
@@ -118,11 +109,9 @@ def exportScene(exportPath, bakeAnim, exportType):
             lodValue = lodNode.name[1]
             rt.appendIfUnique(lodsInScene, lodValue)
 
-        #print "found those lods {0} in preset {1}".format(lodsInScene, pLayer.name)
         for lodValue in lodsInScene:
-            #print "exporting lod {0}".format(lodValue)
             showLodInLayer(pLayer, lodValue)
             exportLodPreset(exportPath, pLayer.name, lodValue)
 
         pLayer.on = False
-    print "OPERATION COMPLETE"
+    print("OPERATION COMPLETE")

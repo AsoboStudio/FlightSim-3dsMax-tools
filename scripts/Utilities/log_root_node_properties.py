@@ -7,13 +7,13 @@ def get_children(node):
             yield d
 
 def printRootPropBuffer():
-    print "root prop"
+    print("root prop")
     rootNode = MaxPlus.Core.GetRootNode()
     buffer = MaxPlus.WStr()
     MaxPlus.INode.GetUserPropBuffer(rootNode,buffer)
     bufferString = buffer.Contents()
     bufferString = bufferString.replace(";","\n")
-    print bufferString
+    print(bufferString)
 
 def cleanRootPropBuffer():
     rootNode = MaxPlus.Core.GetRootNode()

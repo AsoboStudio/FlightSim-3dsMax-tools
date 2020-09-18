@@ -2,15 +2,13 @@ import os
 import sys
 from pymxs import runtime as rt
 from maxsdk import menu as sdkmenu
+from maxsdk.globals import *
 
-reload(sdkmenu)
 toolFolder = os.path.dirname(__file__)
 if toolFolder not in sys.path:
     sys.path.append(toolFolder)
 
 import PBRviewport
-
-reload(PBRviewport)
 
 
 def installMenu():

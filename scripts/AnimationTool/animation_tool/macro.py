@@ -1,16 +1,12 @@
 import MaxPlus
 import maxsdk.utility as sdkutility
 
-reload(sdkutility)
 import maxsdk.node as sdknode
 
-reload(sdknode)
 import maxsdk.skin as sdkskin
 
-reload(sdkskin)
 import maxsdk.animation as sdkanim
 
-reload(sdkanim)
 import re
 import os
 import pymxs

@@ -33,7 +33,7 @@ def P4revert(filePath, changelistName="default"):
         process = subprocess.Popen(cmd, shell=True)
         process.wait()
         os.system('cmd /c "{0}"'.format(cmd))
-        print cmd
+        print(cmd)
 
 def P4createChangelist(changelistName):
     #empthy changelist

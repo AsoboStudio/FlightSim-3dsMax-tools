@@ -4,9 +4,7 @@ from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from pymxs import runtime as rt
 import AnimationExporter.fsBatcher.ui.mainwindow_ui as mainWindowUI
-reload(mainWindowUI)
 import AnimationExporter.fsBatcher.max.AnimationTeamBatcher as AnimExport
-reload(AnimExport)
 
 class MainWindow(QWidget,mainWindowUI.Ui_MainWindow):
 

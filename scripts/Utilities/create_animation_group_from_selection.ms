@@ -37,7 +37,7 @@ fn getNodeFromOtherLod mNode =
 	match = rgx.Match mNode.Name patternLod
 	if not match.Success then
 	(
-		print "no lod found this node"
+		print("no lod found this node")
 		return undefined
 	)
 	else
@@ -105,15 +105,15 @@ if $ != undefined then
 						maxScriptManager.AddNodeInAnimationGroup animGroup lodNode.handle
 					)
 					maxScriptManager.AddNodeInAnimationGroup animGroup n.handle
-					endFrame = maxScriptManager.GeTimeRange animGroup
+					endFrame = maxScriptManager.GetTimeRange animGroup
 					maxScriptManager.SetAnimationGroupTimeRange animGroup 0 endframe
 					maxScriptManager.RenameAnimationGroup animGroup noLodNoHelper
 				)
 				else
 				(
-					print "added without lod pattern: " + n.name
+					print("added without lod pattern: " + n.name)
 					maxScriptManager.AddNodeInAnimationGroup animGroup n.handle
-					endFrame = maxScriptManager.GeTimeRange animGroup
+					endFrame = maxScriptManager.GetTimeRange animGroup
 					maxScriptManager.SetAnimationGroupTimeRange animGroup 0 endframe
 					animGroupName = getAnimGroupName n
 					maxScriptManager.RenameAnimationGroup animGroup animGroupName
@@ -130,16 +130,16 @@ if $ != undefined then
 					(
 						maxScriptManager.AddNodeInAnimationGroup animGroup lodNode.handle
 					)
-					endFrame = maxScriptManager.GeTimeRange animGroup
+					endFrame = maxScriptManager.GetTimeRange animGroup
 					maxScriptManager.SetAnimationGroupTimeRange animGroup 0 endframe
 					animGroupName = getAnimGroupName n
 					maxScriptManager.RenameAnimationGroup animGroup animGroupName
 				)
 				else
 				(
-					print "added without lod pattern: " + n.name
+					print("added without lod pattern: " + n.name)
 					maxScriptManager.AddNodeInAnimationGroup animGroup n.handle
-					endFrame = maxScriptManager.GeTimeRange animGroup
+					endFrame = maxScriptManager.GetTimeRange animGroup
 					maxScriptManager.SetAnimationGroupTimeRange animGroup 0 endframe
 					animGroupName = getAnimGroupName n
 					maxScriptManager.RenameAnimationGroup animGroup animGroupName

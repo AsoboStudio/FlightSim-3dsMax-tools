@@ -60,7 +60,7 @@ def mirrorNode(node, mirrorAxis):
     elif mirrorAxis == "Z":
         p = rt.Point3(1, 1, -1)
     else:
-        print "Error axis do not match"
+        print("Error axis do not match")
     rt.scale(rtNode, p)
 
     node.SetParent(original_parent)

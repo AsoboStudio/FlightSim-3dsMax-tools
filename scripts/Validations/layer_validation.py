@@ -10,7 +10,6 @@ import re
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
 
 from maxsdk import layer as sdkLayer
-reload(sdkLayer)
 
 
 def check_layers_names(silent = False):

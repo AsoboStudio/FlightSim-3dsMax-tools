@@ -8,16 +8,11 @@ rt = pymxs.runtime
 dir_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(dir_path)
 
-import layer_validation
-reload(layer_validation)
-
 sys.path.append(os.path.join(os.path.dirname(dir_path), os.pardir))
 
 from maxsdk import utility as sdk_utility
-reload(sdk_utility)
 
 from maxsdk import layer as sdkLayer
-reload(sdkLayer)
 
 
 

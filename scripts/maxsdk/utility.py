@@ -3,10 +3,12 @@ Generic Python MaxPlus library
 """
 import os
 import re
+from maxsdk.globals import *
+if MAXVERSION() < MAX2021:
+    import MaxPlus
 
-import MaxPlus as MaxPlus
 import pymxs
-from pymxs import runtime as rt
+rt =pymxs.runtime
 
 
 def get_selection():
@@ -22,7 +24,7 @@ def get_parent_layer(layer_name):
     l = rt.LayerManager.getLayerFromName(layer_name)
     p = l.getParent()
     if p is None:
-        print "Layer {0} is a root".format(layer_name)
+        print("Layer {0} is a root".format(layer_name))
     else:
         return MaxPlus.LayerManager.GetLayer(p.name)
 
@@ -213,7 +215,7 @@ def Mirror(node, mirrorAxis):
     elif mirrorAxis == "Z":
         scale = MaxPlus.Point3(1, 1, -1)
     else:
-        print "Error axis do not match"
+        print("Error axis do not match")
     node.Scaling = scale
 
 
@@ -273,9 +275,13 @@ def findObjectBySuffix(suffix, nodeList):
     return result_list
 
 def removeLODSuffix(name):
-    w = re.findall("_LOD[0-9]+$", name) # find the lod part
+    w = re.findall("_LOD[0-9]+$", name) # find the lod part    
     if(w):
-        name = name.replace(w[0],"") # and remove it
+        name = name.replace(w[0], "")  # and remove it
+    else:
+        w = re.match("x[0-9]+_", name)
+        if (w):
+            name = name.replace(w.group(0), "")            
     return name
 
 def CreateSphereAt(radius, pos, name):
@@ -290,7 +296,7 @@ def CreateSphereAt(radius, pos, name):
 
 def printList(a):
     for i in a:
-        print i
+        print(i)
 
 
 def RemoveScaleKeys(node):
@@ -372,7 +378,7 @@ def get_unparent_nodes_in_layer_hierarchy(root_layer):
     lyr_list = get_layer_children(root_layer, lyr_list)
 
     for l in lyr_list:
-        print l.name
+        print(l.name)
         mp_layer = MaxPlus.LayerManager.GetLayer(l.name)
         lyr_nodes_children = mp_layer.GetNodes()
         for n in lyr_nodes_children:
@@ -478,7 +484,7 @@ def get_asobo_folder():
         os.makedirs(asobo)
     return asobo
 
-def attachToMax(widget):
+def attachToMax(widget):    
     MaxPlus.AttachQWidgetToMax(widget)
 
 

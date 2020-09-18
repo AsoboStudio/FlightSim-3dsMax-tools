@@ -4,13 +4,10 @@ import MaxPlus
 import qtdriver
 import maxsdk.skin as sdkskin
 
-reload(sdkskin)
 import maxsdk.node as sdknode
 
-reload(sdknode)
 import maxsdk.utility as sdkutility
 
-reload(sdkutility)
 import re
 import macro
 
@@ -151,7 +148,7 @@ class MainView(QMainWindow):
         elif mirrorAxis == "Z":
             p = rt.Point3(1, 1, -1)
         else:
-            print "Error axis do not match"
+            print("Error axis do not match")
         rt.scale(rtNode, p)
 
         node.SetParent(original_parent)

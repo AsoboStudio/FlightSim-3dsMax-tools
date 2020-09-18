@@ -97,8 +97,12 @@ pbrLighting PBRModel(vOut IN , float3 worldNormal, float4 albedo, float metalnes
 	// // Ambient lighting (IBL).
 	float3 ambientLighting;
 	{
-		// Sample diffuse irradiance at normal direction.
-		float3 irradiance = p_irradianceTex.Sample(wrapSampler, worldNormal).rgb;
+		float3 correctReflection = Lr.xzy;
+
+		// Max mip of the environment cubemap
+		uint specularTextureLevels = querySpecularTextureLevels(p_radianceTex);
+		// Sample last mip of the environment cubemap to get an ambient color
+		float3 irradiance = p_radianceTex.Sample(wrapSampler, worldNormal.xzy, specularTextureLevels- 1).rgb;
 
 		// // Calculate Fresnel term for ambient lighting.
 		// // Since we use pre-filtered cubemap(s) and irradiance is coming from many directions
@@ -113,8 +117,7 @@ pbrLighting PBRModel(vOut IN , float3 worldNormal, float4 albedo, float metalnes
 		float3 diffuseIBL = kd * albedo * irradiance;
 
 		// // Sample pre-filtered specular reflection environment at correct mipmap level.
-		uint specularTextureLevels = querySpecularTextureLevels(p_radianceTex);
-		float3 specularIrradiance = p_radianceTex.SampleLevel(wrapSampler, Lr.xzy, roughness * specularTextureLevels).rgb;
+		float3 specularIrradiance = p_radianceTex.SampleLevel(wrapSampler, correctReflection, roughness * specularTextureLevels).rgb;
 
 		// // Split-sum approximation factors for Cook-Torrance specular BRDF.
 		float2 specularBRDF = p_specularBRDF_LUT.Sample(BRDFSampler, float2(cosLo, roughness)).rg;

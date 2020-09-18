@@ -14,9 +14,7 @@ if sdk_path not in sys.path:
 import animation_tool.mainWindow as mainWindow
 
 # when in development mode we should reload all packages
-reload(mainWindow)
 import animation_tool.macro as macro
-reload(macro)
 
 # import maxsdk.debug
 

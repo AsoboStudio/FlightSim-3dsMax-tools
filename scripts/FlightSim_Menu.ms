@@ -17,7 +17,20 @@ macroScript CreateAnimationGroupFromSelection category:"FlightSim" buttontext:"C
 
 
 (
-	local FlightSimMenu = menuMan.createMenu "FlightSim"
+	local FlightSimMenu = menuMan.findMenu "FlightSim"
+	while True do (
+		local FlightSimMenu = menuMan.findMenu "FlightSim"
+
+		if FlightSimMenu != undefined then
+		(		
+			menuMan.unRegisterMenu(FlightSimMenu)
+		)
+		else
+		(
+			exit
+		)
+	)
+	FlightSimMenu = menuMan.createMenu "FlightSim"
 
 	local babylonUtilitiesSubMenu = menuMan.createMenu "Babylon Utilities"
 
@@ -29,11 +42,8 @@ macroScript CreateAnimationGroupFromSelection category:"FlightSim" buttontext:"C
 
 	FlightSimMenu.addItem (menuMan.createSubMenuItem "FlightSim" babylonUtilitiesSubMenu) -1
 
-	
 	local mainMenu = menuMan.getMainMenuBar()
-	for i = mainMenu.numItems() to 1 by -1 do
-		if (mainMenu.getItem i).getTitle() == "FlightSim" then
-			mainMenu.removeItem (mainMenu.getItem i)
+
 	mainMenu.addItem (menuMan.createSubMenuItem "FlightSim" FlightSimMenu) -1
 	menuMan.updateMenuBar()
 )

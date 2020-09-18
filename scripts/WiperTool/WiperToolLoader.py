@@ -1,19 +1,17 @@
-import WiperTool.ui.mainwindow_ui as mainWindowUI
-import WiperTool.ui.wiperConfigItem_ui as wiperConfigItemUI
 import uuid
 
-reload(wiperConfigItemUI)
-reload(mainWindowUI)
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from pymxs import runtime as rt
 from maxsdk import utility
 from maxsdk import userprop as sdkprop
-import WiperTool_Max
+from maxsdk.globals import *
+from WiperTool.WiperTool_Max import WiperTool_Max
+import WiperTool.ui.mainwindow_ui as mainWindowUI
+import WiperTool.ui.wiperConfigItem_ui as wiperConfigItemUI
 
-reload(WiperTool_Max)
-from WiperTool_Max import WiperTool_Max
+
 import os
 
 
@@ -23,14 +21,14 @@ class WiperPointsDefinition(QWidget, wiperConfigItemUI.Ui_wiperPointsDefinition)
         self.setupUi(self)
 
 
-class WipeMaskGenerator(QWidget, mainWindowUI.Ui_WiperMaskGenerator):
+class WipeMaskGenerator(QWidget,mainWindowUI.Ui_WiperMaskGenerator):
     wiperConfigsMap = None
-
     # tool parameters
     bakePath = None
-    initFrame = 0
-    midFrame = 0
-    finalFrame = 0
+    animInFrameStart = 0
+    animInFrameEnd = 0
+    animOutFrameStart = 0
+    animOutFrameEnd = 0
     windshieldName = None
 
     def __init__(self):
@@ -40,8 +38,10 @@ class WipeMaskGenerator(QWidget, mainWindowUI.Ui_WiperMaskGenerator):
         self.__setSampleImage()
         intValidator = QIntValidator()
         self.bakePath = rt.maxFilePath if (rt.maxFilePath is not None) else rt.pathConfig.getCurrentProjectFolder()
-        self.initalAnimFrame.setValidator(intValidator)
-        self.finalAnimFrame.setValidator(intValidator)
+        self.AnimInStart.setValidator(intValidator)
+        self.AnimInEnd.setValidator(intValidator)
+        self.AnimOutStart.setValidator(intValidator)
+        self.AnimOutEnd.setValidator(intValidator)
         self.configGroupBoxlayout = QVBoxLayout()
         self.wiperConfigurationGroupBox.setLayout(self.configGroupBoxlayout)
         self.filePathButton.clicked.connect(lambda: self.__browseOutputFile(outputPath=self.bakePath))
@@ -49,24 +49,27 @@ class WipeMaskGenerator(QWidget, mainWindowUI.Ui_WiperMaskGenerator):
         self.wiperConfigsMap = dict()
         self.__loadParams()
         self.outputPath.setText(self.bakePath)
-        self.initalAnimFrame.setText(str(self.initFrame))
-        self.midlleAnimationFrame.setText(str(self.midFrame))
-        self.finalAnimFrame.setText(str(self.finalFrame))
+        self.AnimInStart.setText(str(self.animInFrameStart))
+        self.AnimInEnd.setText(str(self.animInFrameEnd))
+        self.AnimOutStart.setText(str(self.animOutFrameStart))
+        self.AnimOutEnd.setText(str(self.animOutFrameEnd))
         self.windshieldNodeName.setText(self.windshieldName)
 
-        self.initalAnimFrame.textChanged.connect(lambda: self.__onParamChanged(0))
-        self.midlleAnimationFrame.textChanged.connect(lambda: self.__onParamChanged(1))
-        self.finalAnimFrame.textChanged.connect(lambda: self.__onParamChanged(2))
-        self.windshieldNodeName.textChanged.connect(lambda: self.__onParamChanged(3))
-        self.outputPath.textChanged.connect(lambda: self.__onParamChanged(4))
+        self.AnimInStart.textChanged.connect(lambda: self.__onParamChanged(0))
+        self.AnimInEnd.textChanged.connect(lambda: self.__onParamChanged(1))
+        self.AnimOutStart.textChanged.connect(lambda: self.__onParamChanged(2))
+        self.AnimOutEnd.textChanged.connect(lambda: self.__onParamChanged(3))
+        self.windshieldNodeName.textChanged.connect(lambda: self.__onParamChanged(4))
+        self.outputPath.textChanged.connect(lambda: self.__onParamChanged(5))
 
     @Slot()
     def __onParamChanged(self, param):
-        self.initFrame = self.initalAnimFrame.text() if param == 0 else self.initFrame
-        self.midFrame = self.midlleAnimationFrame.text() if param == 1 else self.midFrame
-        self.finalFrame = self.finalAnimFrame.text() if param == 2 else self.finalFrame
-        self.windshieldName = self.windshieldNodeName.text() if param == 3 else self.windshieldName
-        self.bakePath = self.outputPath.text() if param == 4 else self.bakePath
+        self.animInFrameStart = self.AnimInStart.text() if param == 0 else self.animInFrameStart
+        self.animInFrameEnd = self.AnimInEnd.text() if param == 1 else self.animInFrameEnd
+        self.animOutFrameStart = self.AnimOutStart.text() if param == 2 else self.animOutFrameStart
+        self.animOutFrameEnd = self.AnimOutEnd.text() if param == 3 else self.animOutFrameEnd
+        self.windshieldName = self.windshieldNodeName.text() if param == 4 else self.windshieldName
+        self.bakePath = self.outputPath.text() if param == 5 else self.bakePath
 
     def __setSampleImage(self):
         imageDir = os.path.dirname(os.path.abspath(mainWindowUI.__file__))
@@ -88,26 +91,25 @@ class WipeMaskGenerator(QWidget, mainWindowUI.Ui_WiperMaskGenerator):
 
     @Slot()
     def __removeConfiguration(self, ID):
+        if len(self.wiperConfigsMap) <= 1:
+            return
         confItem = self.wiperConfigsMap[ID]
         confItem.hide()
         self.configGroupBoxlayout.removeWidget(confItem)
         del (confItem)
-        self.wiperConfigsMap.pop(ID)
+        self.wiperConifgsMap.pop(ID)
 
     def __browseOutputFile(self, outputPath):
         fileDialog = QFileDialog(self)
         # fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
-        bakePath = fileDialog.getSaveFileName(self, "Bake Texture in", outputPath, "Images (*.png)")
+        bakePath = fileDialog.getSaveFileName(self, "Bake Texture in", outputPath, "Images (*.tga)")
         if bakePath:
             self.outputPath.setText(bakePath[0])
 
     def __bakeTexture(self):
         wipersItems = self.__getWiperPointsList()
-        wiperTool = WiperTool_Max(theGlass=self.windshieldName,
-                                  startFrame=int(self.initFrame), midFrame=int(self.midFrame),
-                                  endFrame=int(self.finalFrame), dummySets=wipersItems,
-                                  outputpath=self.bakePath)
-        wiperTool.run()
+        wt = WiperTool_Max(theGlass=self.windshieldName,animInStart=int(self.animInFrameStart), animInEnd=int(self.animInFrameEnd),animOutStart=int(self.animOutFrameStart),animOutEnd=int(self.animOutFrameEnd), dummySets=wipersItems,outputpath=self.bakePath)
+        wt.run()
 
     def __getWiperPointsList(self):
         wipersItems = list()
@@ -142,9 +144,10 @@ class WipeMaskGenerator(QWidget, mainWindowUI.Ui_WiperMaskGenerator):
         wipersItems = self.__getWiperPointsList()
         wiperArrayString = self.__buildWiperItemsString(wipersItems)
         params = dict()
-        params.update({"initFrame": self.initFrame})
-        params.update({"midFrame": self.midFrame})
-        params.update({"endFrame": self.finalFrame})
+        params.update({"animInStartFrame": self.animInFrameStart})
+        params.update({"animInEndFrame": self.animInFrameEnd})
+        params.update({"animOutStartFrame": self.animOutFrameStart})
+        params.update({"animOutEndFrame": self.animOutFrameEnd})
         params.update({"windshieldName": self.windshieldName})
         params.update({"bakePath": self.bakePath})
         params.update({"wiperItems": wiperArrayString})
@@ -154,12 +157,13 @@ class WipeMaskGenerator(QWidget, mainWindowUI.Ui_WiperMaskGenerator):
         params = sdkprop.getUserPropDict(rt.rootNode, "WipeMaskGenerator")
 
         if params:
-            self.initFrame = params["initFrame"] if params.has_key("initFrame") else 0
-            self.midFrame = params["midFrame"] if params.has_key("midFrame") else 0
-            self.finalFrame = params["endFrame"] if params.has_key("endFrame") else 0
-            self.windshieldName = params["windshieldName"] if params.has_key("windshieldName") else None
-            self.bakePath = params["bakePath"] if params.has_key("bakePath") else None
-            wipersItems = self.__parseWiperItemsString(params["wiperItems"]) if params.has_key("wiperItems") else None
+            self.animInFrameStart = params["animInStartFrame"] if "animInStartFrame" in params.keys() else 0
+            self.animInFrameEnd = params["animInEndFrame"] if "animInEndFrame" in params.keys() else 0 
+            self.animOutFrameStart = params["animOutStartFrame"] if "animOutStartFrame" in params.keys() else 0
+            self.animOutFrameEnd = params["animOutEndFrame"] if "animOutEndFrame" in params.keys() else 0
+            self.windshieldName = params["windshieldName"] if "windshieldName" in params.keys() else None
+            self.bakePath = params["bakePath"] if "bakePath" in params.keys() else None 
+            wipersItems = self.__parseWiperItemsString(params["wiperItems"]) if "wiperItems" in params.keys() else None
             if not wipersItems:
                 self.__addConfiguration(uuid.uuid4())
             else:
@@ -170,8 +174,8 @@ class WipeMaskGenerator(QWidget, mainWindowUI.Ui_WiperMaskGenerator):
 
     def closeEvent(self, *args, **kwargs):
         self.__saveParams()
-
-if __name__ == '__main__':
+wiperGenerator = None
+def run():
+    global wiperGenerator
     wiperGenerator = WipeMaskGenerator()
-    utility.attachToMax(wiperGenerator)
     wiperGenerator.show()

@@ -17,7 +17,7 @@ def updateParallax():
             if heightmapPath:
                 mat.corridor = True
                 mat.HeightmapTex = ""
-                print "{0} has been update".format(mat.name)
+                print("{0} has been update".format(mat.name))
 
 
 maxFile = {r"d:\KittyHawk\ASSETS\KittyHawk_Data\ART\fs\object\Global\Asobo_Buildings\Airports\Specific\Adolfo_Suarez\Adolfo_Suarez_Airport.max",

@@ -1,10 +1,11 @@
 from pymxs import runtime as rt
-
+from maxsdk.globals import *
 def setUserProp(node, keyName, value):
     if isinstance(value, str):
         rt.setUserProp(node, keyName, value)
-    if isinstance(value, unicode):
-        rt.setUserProp(node, keyName, value)
+    if MAXVERSION() < MAX2021:    
+        if isinstance(value, unicode):
+            rt.setUserProp(node, keyName, value)
     if isinstance(value, int):
         rt.setUserProp(node, keyName, str(value))
     if isinstance(value, float):
@@ -19,16 +20,76 @@ def getUserProp(node, keyName, defaultValue = None):
         return defaultValue
 
 
+def dictToString(dictObj):
+    if isinstance(dictObj, dict):
+        propertyValue = ""
+        for i in range(len(dictObj.items())):
+            key = list(dictObj.keys())[i]
+            value = list(dictObj.values())[i]
+            propertyValue += "{0}~{1}".format(str(key), str(value))
+            if i < len(dictObj.items()) - 1:
+                propertyValue += ";"
+        return propertyValue
+    return None
+
+
+def stringToDict(string):
+    dictRes = dict()
+    keyValue = string.split(";")
+    for kv in keyValue:
+        k = kv.split("~")[0]
+        v = kv.split("~")[1]
+        dictRes.update({k: v})
+    return dictRes
+
+def string_to_typed_dict(string):
+    dictRes = dict()
+    keyValue = string.split(";")
+    for kv in keyValue:
+        k = kv.split("~")[0]
+        v = kv.split("~")[1]
+        v = convertUserPropToObviousType(v)
+        dictRes.update({k: v})
+    return dictRes
+
+
+def setUserPropHeadedDict(node, propName, nameDict):
+    """
+    headedDictionary = tuple(str, dict)
+    """
+    header = nameDict[0]
+    dictObj = nameDict[1]
+    if isinstance(dictObj, dict):
+        propertyValue = "{0};".format(str(header))
+        propertyValue += dictToString(dictObj)
+        setUserProp(node, propName, propertyValue)
+
+def getUserPropHeadedDict(node, propName):
+    '''
+    reads the user property propName in the node and turns it into a tuple( header, dictionary ).\n 
+    
+    in: node=pymxs.MXSWrapperBase, propName=str, keyName=str\n 
+    out: tuple(str,dict) 
+    '''
+    res = getUserProp(node, propName)
+    if res is not None:
+        headless = res.split(";", 1)
+        if (len(headless) == 1):
+            return (headless[0], dict())
+        if (headless[1] != ""):
+            dictObj = string_to_typed_dict(headless[1])
+            return (headless[0], dictObj)
+        else:
+            return (headless[0], dict())
+    else:
+        return 
+
+
 def getUserPropDict(node, propName, keyName=None):
     res = getUserProp(node, propName)
     dictRes = dict()
     try:
-        keyValue = res.split(";")
-
-        for kv in keyValue:
-            k = kv.split("~")[0]
-            v = kv.split("~")[1]
-            dictRes.update({k: v})
+        dictRes = stringToDict(res)
         if not keyName:
             return dictRes
         else:
@@ -36,17 +97,9 @@ def getUserPropDict(node, propName, keyName=None):
     except:
         return dictRes
 
-
-
 def setUserPropDict(node, propName, dictObj):
-    if isinstance(dictObj,dict):
-        propertyValue = ""
-        for i in range(len(dictObj.items())):
-            key = list(dictObj.keys())[i]
-            value = list(dictObj.values())[i]
-            propertyValue += "{0}~{1}".format(str(key), str(value))
-            if i < len(dictObj.items()) -1:
-                propertyValue +=";"
+    if isinstance(dictObj, dict):
+        propertyValue = dictToString(dictObj)
         setUserProp(node, propName, propertyValue)
 
 def setUserPropList(node, propName, listObj):
@@ -54,6 +107,8 @@ def setUserPropList(node, propName, listObj):
         propertyValue = ""
         objCount = len(listObj)
         for i in range(objCount):
+            if listObj[i] is None:
+                continue
             propertyValue += cleanupStringForPropListStorage(listObj[i])
             #if (i < objCount - 1):
             propertyValue += ";"
@@ -88,26 +143,35 @@ def openUserPropertyWindow():
 def cleanupStringForPropListStorage(string):
     cleanString = str()
     for c in string:        
-        if (ord(c) < 128) and c != ";":
+        if (ord(c) < 128) and c != ";" and c != "~":
             cleanString += c
     return cleanString
 
 def convertUserPropToObviousType(i):
-    if (i == "False" or i == "false" or i == "FALSE"):
-        return False
-    elif (i == "True" or i == "true" or i == "TRUE"):
-        return True
-    else:
+    """
+    Convert a string into another type if the type is obvious.
+
+    \nin:
+    i=string to convert
+
+    \nout:
+    bool / None / int / float / str / unicode
+    """
+    if isinstance(i,str) or isinstance(i,unicode):
+        if (i == "False"):
+            return False
+        elif (i == "True"):
+            return True
+        elif (i == "None"):
+            return None
+    try:
+        return int(i)
+    except:
         try:
-            return int(i)
+            return float(i)
         except:
             try:
-                return float(i)
+                return str(i)
             except:
-                try:
-                    return str(i)
-                except:
-                    return unicode(i)
-            
-
+                return unicode(i)
 

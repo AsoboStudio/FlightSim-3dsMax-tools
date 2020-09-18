@@ -47,12 +47,12 @@ def report(maxFiles):
     REPORTFOLDER = ""
     data = []
     for m in maxFiles:
-        print "loading ..." + m
+        print("loading ..." + m)
         rt.loadMaxFile(m, quiet=True)
         if not sceneHasContainer():
             continue
         else:
-            print m + " has container"
+            print(m + " has container")
         exportItemsString = rt.getUserProp(rt.rootNode, "babylonjs_ExportItemList")
         if not exportItemsString:
             continue
@@ -81,7 +81,7 @@ def report(maxFiles):
     with open(reportFile, 'w') as outfile:
         json.dump(data, outfile, indent=4, cls=CustomEncoder)
 
-    print "report done"
+    print("report done")
 
 
 def getMaxFiles(folder):
@@ -100,9 +100,9 @@ def getSceneWithContainer():
     for m in getMaxFiles():
         rt.loadMaxFile(m, quiet=True)
         if sceneHasContainer():
-            print m
+            print(m)
 
-    print "evaluation done"
+    print("evaluation done")
 
 
 def getMaxFileWithContainersFromReport():

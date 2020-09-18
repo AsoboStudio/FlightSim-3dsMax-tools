@@ -3,10 +3,8 @@ import os
 import sys
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 import json_utility
-reload(json_utility)
 
 import utility as sdk_utility
-reload(sdk_utility)
 
 import json
 
@@ -37,7 +35,7 @@ class INodeEncoder(json.JSONEncoder):
         name = data["name"]
         node = MaxPlus.INode.GetINodeByName(name)
         if not node:
-            print "Node: {0} not found".format(data["name"])
+            print("Node: {0} not found".format(data["name"]))
             return
 
         source_transform_control = sdk_utility.GetTransformControl(node)

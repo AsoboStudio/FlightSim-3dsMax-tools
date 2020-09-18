@@ -7,15 +7,9 @@ import MaxPlus
 import os
 
 from maxsdk import userprop
-
-reload(userprop)
 from maxsdk import perforce as sdkperforce
 from maxsdk import dialog as sdkdialog
 import utils
-
-reload(utils)
-reload(sdkperforce)
-reload(sdkdialog)
 
 
 class MainWindow(QDialog):

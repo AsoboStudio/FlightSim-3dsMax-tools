@@ -2,7 +2,6 @@ import os
 import sys
 from pymxs import runtime as rt
 from maxsdk import menu as sdkmenu
-reload(sdkmenu)
 
 toolFolder = os.path.dirname(__file__)
 if toolFolder not in sys.path:
@@ -10,8 +9,6 @@ if toolFolder not in sys.path:
 
 import lodsExporter
 import envAssetExporter
-reload(lodsExporter)
-reload(envAssetExporter)
 
 LODS_EXP_MACRO = "ExportEnvironmentLODs"
 ENV_EXP_MACRO = "ExportEnvironmentAsset"

@@ -1,10 +1,23 @@
+"""
+This module contains function to handle layers in 3dsMax
+"""
+
 import pymxs
-import MaxPlus
+from maxsdk.globals import *
+if MAXVERSION() < MAX2021:
+    import MaxPlus
 
 rt = pymxs.runtime
 
-
 def getLayerChildren(root, result):
+    """
+    Recursively get all the descendant layers (including self) of a layer
+    
+    \nin: 
+    root=(MixinInterface.LayerProperties)
+    \nin-out:
+    result=list(MixinInterface.LayerProperties)
+    """
     if root is not None:
         num_children = root.getNumChildren()
         result.append(root)
@@ -13,6 +26,14 @@ def getLayerChildren(root, result):
             getLayerChildren(child, result)
 
 def getLayerDescendants(roots):
+    """
+    Returns all the descendant layers (including self) of all the layers specified.
+    
+    \nin: 
+    list(MixinInterface.LayerProperties)
+    \nout:
+    list(MixinInterface.LayerProperties)
+    """
     result = []
     for r in roots:
         res = []
@@ -20,7 +41,15 @@ def getLayerDescendants(roots):
         result += res
     return result
 
-def getChildrenLayer(layer):   
+def getChildrenLayer(layer):
+    """
+    Get the children layers. All the children of children recursively.
+    
+    \nin: 
+    MixinInterface.LayerProperties
+    \nout:
+    MixinInterface.LayerProperties
+    """
     result = [] 
     if layer is not None:
         num_children = layer.getNumChildren()
@@ -30,15 +59,37 @@ def getChildrenLayer(layer):
     return result
 
 def getParentLayer(layer):
+    """
+    Get the parent layer
+
+    \nin: 
+    MixinInterface.LayerProperties
+    \nout:
+    MixinInterface.LayerProperties
+    """
     return layer.getParent()
 
 def getRootLayer(layer):
+    """
+    Find the root of the layer by going up the parent chain.
+
+    \nin: 
+    MixinInterface.LayerProperties
+    \nout:
+    MixinInterface.LayerProperties
+    """
     if(layer.getParent() != None):
         return getRootLayer(layer.getParent())
     else:
         return layer
 
 def getAllRootLayer():
+    """
+    Returns all the root layer in the scene. A root layer is a layer without any parent.
+
+    \nout:
+    list(MixinInterface.LayerProperties)
+    """
     result = []
     layers = getAllLayers()
     for l in layers:
@@ -48,6 +99,12 @@ def getAllRootLayer():
 
 
 def getAllLayers():
+    """
+    Returns all layers in the scene
+    
+    \nout:
+    list(MixinInterface.LayerProperties)
+    """
     result = []
     count = rt.LayerManager.count
     for i in range(count):
@@ -65,9 +122,12 @@ def getAllLayersMP():
 
 def getAllNodeInLayerHierarchy(rootLayer):
     """
-    return all node contained in a layer hierarchy
-    :param rootLayer: base layer
-    :return: list of MaxPlus.INode
+    Returns all node contained in a layer hierarchy.
+
+    \nin: 
+    rootLayer= MaxPlus base layer
+    \nout:
+    list of MaxPlus.INode
     """
     result_list = []
     lyrList = []
@@ -80,6 +140,15 @@ def getAllNodeInLayerHierarchy(rootLayer):
     return result_list
 
 def getDependentsOfLayer(lay):
+    """
+    Get every valid node dependent on the specified layer.
+
+    \nin:
+    lay=MixinInterface.LayerProperties
+
+    \nout: 
+    list(node)
+    """
     result = []
     layerRT = lay.layerAsRefTarg
     lyr_nodes_children = rt.refs.dependents(layerRT)
@@ -89,11 +158,26 @@ def getDependentsOfLayer(lay):
     return result
 
 def getNodesInLayer(lay):
+    """
+    Returns all the nodes in a layer
+
+    \nin:
+    lay= MixinInterface.LayerProperties
+
+    \nout:
+    pymxs.MXSWrapperBase
+    """
     result = []
     lay.nodes(pymxs.mxsreference(result))
     return result
 
 def getSelectedLayer():
+    """
+    Returns the first selected layer in the scene. Check first if an explorer is open, if so it will get these selected items. 
+
+    \nout: 
+    MaxPlus.Layer
+    """
     explorer = rt.SceneExplorerManager.GetActiveExplorer()
     if (explorer == None):
         layer = rt.getCurrentSelection()
@@ -104,11 +188,58 @@ def getSelectedLayer():
         rt.messageBox("Please select a layer")
         return
     selectedLayerName = layer[0].name
+
     return MaxPlus.LayerManager.GetLayer(selectedLayerName)
 
 def deleteAllEmptyLayerHierarchies():
+    """
+    Attempts to delete all layers. Not empty ones are kept by 3dsMax automatically
+    """
     layers = getAllRootLayer()
     for lay in layers:
         rt.layerManager.deleteLayerHierarchy(lay.name)
 
 
+def disableAll():
+    """
+    Disable every layer in the scene
+    """
+    layers = getAllLayers()
+    disableThese(layers)
+
+def _visibilityInHierarchy(layer, state):
+    """
+    Recursive Function to enable every direct parents of a layer.
+
+    \nin: 
+    layer = pymxs.runtime.MixinInterface.LayerProperties
+    state = bool
+    """
+    layer.on = state
+    parent = layer.getParent()
+    if parent is not None:
+        _visibilityInHierarchy(parent, state)
+
+
+def enableThese(layers):
+    """
+    Enables a list of layer. This will also enable the parents of the layer.
+
+    \nin:
+    layers = list(MixinInterface.LayerProperties)
+    """
+    for layer in layers:
+        _visibilityInHierarchy(layer, True)
+
+def disableThese(layers):
+    """
+    Disable a list of layer.
+
+    \nin:
+    layers = list(MixinInterface.LayerProperties)
+    """
+    for layer in layers:
+        layer.on = False
+
+def getLayerFromNode(node):
+    node.layer.name

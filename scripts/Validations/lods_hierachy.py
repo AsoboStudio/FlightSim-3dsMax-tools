@@ -17,12 +17,6 @@ from maxsdk import layer as sdkLayer
 import maxsdk.node as sdknode
 import node_validation
 
-reload(node_validation)
-reload(layer_validation)
-reload(sdk_utility)
-reload(sdkLayer)
-reload(sdknode)
-
 rt = pymxs.runtime
 
 report = []

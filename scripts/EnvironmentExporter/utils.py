@@ -6,7 +6,6 @@ from PySide2.QtCore import *
 from maxsdk import userprop
 import BabylonPYMXS
 
-reload(userprop)
 from maxsdk import node as sdknode
 from maxsdk import perforce as sdkperforce
 
@@ -85,7 +84,7 @@ def convertToBoxCollider(gizmo):
     newGizmo.name = gizmo.name
     gizmo.layer.addnode(newGizmo)
     rt.delete(gizmo)
-    print newGizmo.boxGizmo.height
+    print(newGizmo.boxGizmo.height)
     if newGizmo.boxGizmo.height <= 0:
         newGizmo.boxgizmo.height *= -1
         newGizmo.boxgizmo.width *= -1

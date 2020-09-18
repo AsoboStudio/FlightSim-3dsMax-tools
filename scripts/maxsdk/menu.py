@@ -23,7 +23,7 @@ def getItemByName(maxMenu,name):
 
 def deleteItemByName(maxMenu, name):
     if not maxMenu:
-        print "No menu found with name: {0}".format(name)
+        print("No menu found with name: {0}".format(name))
         return
     toRemove = []
     for i in range(1, maxMenu.numItems() + 1):

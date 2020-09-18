@@ -3,20 +3,15 @@ import sys
 from pymxs import runtime as rt
 from maxsdk import menu as sdkmenu
 
+from WiperTool import WiperToolLoader
 toolFolder = os.path.dirname(__file__)
 if toolFolder not in sys.path:
     sys.path.append(toolFolder)
 
 def installMenu():
-    loaderPath = os.path.join(os.path.dirname(__file__), "WiperToolLoader.py")
 
-    macroscript = r'\
-    macroScript WiperMaskGenerator\
-    category: "FlightSim"\
-    tooltip: "Wiper Mask Generator"\
-    (on execute do python.ExecuteFile "{0}")'.format(loaderPath)
+    sdkmenu.createMacroScript(_func=WiperToolLoader.run, category="FlightSim", name="WiperMaskGenerator", button_text="Wiper Mask Generator")
 
-    rt.execute(macroscript)
     actionItem = rt.menuMan.createActionItem("WiperMaskGenerator", "FlightSim")
     FlightSimMenu = rt.menuman.findmenu("FlightSim")
     maxMenuBar = rt.menuMan.getMainMenuBar()
@@ -24,6 +19,6 @@ def installMenu():
         sdkmenu.safeAddItem(FlightSimMenu, actionItem)
         sdkmenu.safeAddItem(maxMenuBar, rt.menuMan.createSubMenuItem("FlightSim", FlightSimMenu))
     else:
-        print "Cannot find FlightSim menu"
+        print("Cannot find FlightSim menu")
 
     rt.menuMan.updateMenuBar()

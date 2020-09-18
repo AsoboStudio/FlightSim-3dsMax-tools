@@ -19,7 +19,11 @@ autoPromoteDelegateProps:false
 	    ConeAngle type:#float animatable:false default:90.0 ui:ConeAngle_UI
 		HasSimmetry type:#boolean animatable:false default:false ui:HasSimmetry_UI
 		FlashFrequency type:#float default:0.0 animatable:false default:false ui:FlashFrequency_UI
+		FlashDuration type:#float default:0.2 animatable:false default:false ui:FlashDuration_UI
+		FlashPhase type:#float default:0.0 animatable:false default:false ui:FlashPhase_UI
+		RotationSpeed type:#float default:0.0 animatable:false default:false ui:RotationSpeed_UI
 		Kelvin type:#float default:3600.0 ui:Kelvin_UI
+		ActivationMode type:#integer animatable:false default:1 ui:ActivationMode_UI
 
 		on Kelvin set val do(
 			delegate.usekelvin = true
@@ -54,12 +58,23 @@ autoPromoteDelegateProps:false
 	(
 		spinner Kelvin_UI "Kelvin" range:[1000, 20000, 3600.0] type:#Float align:#right scale:100
         colorpicker Color_UI "Light Color:" modal:false align:#right
-	    spinner Intensity_UI "Intensity" range:[0.0, 10000000.0, 1.0] type:#Float align:#right
+	    spinner Intensity_UI "Intensity" range:[0.0, 10000000.0, 1.0] type:#Float align:#right\
+			tooltip:"Flash per minutes"
 
 		spinner ConeAngle_UI "Cone Angle" range:[0.0, 360, 90.0] type:#Float align:#right
-		checkbox HasSimmetry_UI "Has Simmetry" type:#boolean
-		spinner FlashFrequency_UI "Flash Frequency" range:[0.0, 1000.0, 1.0] align:#right type:#Float
+		checkbox HasSimmetry_UI "Has Symmetry" type:#boolean
+		group "Flash Settings" (
+		spinner FlashFrequency_UI "Frequency (1/min)" range:[0.0, 1000.0, 1.0] align:#right type:#Float width:90 \
+			tooltip:"Flash per minutes"
+		spinner FlashDuration_UI "Duration (s)" range:[0.0, 1000.0, 0.2] align:#right type:#float width:90 \
+			tooltip:"Flash duration in seconds"
+		spinner FlashPhase_UI "Phase (s)" range:[0.0, 1000.0, 1.0] align:#right type:#float width:90 \
+			tooltip:"Flash phase in seconds"
+		spinner RotationSpeed_UI "Rotation (RPM)" range:[-1000.0, 1000.0, 0.0] align:#right type:#float width:90 \
+			tooltip:"Rotation per minutes" )
 
+		radiobuttons ActivationMode_UI "Activation Mode" columns:1 labels:#("Day/Night Cycle","Always On") 
+						
 	)
 
 

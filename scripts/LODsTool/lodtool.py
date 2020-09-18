@@ -22,19 +22,14 @@ if not parentFolder in sys.path:
 
 from maxsdk import utility
 
-reload(utility)
 from maxsdk import layer as sdk_layer
 
-reload(sdk_layer)
 from maxsdk import serializable as sdk_serializable
 
-reload(sdk_serializable)
 from maxsdk import ui as sdk_ui
 
-reload(sdk_ui)
 from maxsdk import node as sdk_node
 
-reload(sdk_node)
 
 # import maxsdk.debug
 

@@ -83,7 +83,7 @@ def plotAnimation(nodeList):
                 rt_target.setmxsprop("transform", t)
             command = '(getnodebyname "{0}").transform.controller = (getnodebyname "{1}").transform.controller'.format(
                 n.Name, tmpNode.Name)
-            print command
+            print(command)
             MaxPlus.Core.EvalMAXScript(command)
     finally:
         MaxPlus.Animation.SetAnimateButtonState(False)

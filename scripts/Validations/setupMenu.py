@@ -2,7 +2,6 @@ import os
 import sys
 from pymxs import runtime as rt
 from maxsdk import menu as sdkmenu
-reload(sdkmenu)
 
 toolFolder = os.path.dirname(__file__)
 if toolFolder not in sys.path:
@@ -13,12 +12,7 @@ import layer_validation
 import lods_hierachy
 import unique_names
 import node_validation
-
-reload(fix_node_names)
-reload(layer_validation)
-reload(lods_hierachy)
-reload(unique_names)
-reload(node_validation)
+import rebuild_mesh
 
 CATEGORY_MACRO = "FlightSim"
 SUB_MENU_NAME = "Plane Validation"
@@ -30,12 +24,14 @@ def installMenu():
     sdkmenu.createMacroScript(_func=lods_hierachy.run, category=CATEGORY_MACRO, name="LODsHierarchy", button_text="LODs Hierarchy")
     sdkmenu.createMacroScript(_func=unique_names.run, category=CATEGORY_MACRO, name="UniqueNames", button_text= "Unique Names")
     sdkmenu.createMacroScript(_func=node_validation.run, category=CATEGORY_MACRO, name="Nodes")
+    sdkmenu.createMacroScript(_func=rebuild_mesh.run, category=CATEGORY_MACRO, name="RebuildNodes", button_text="Rebuild Nodes (risky)")
 
     actionItem0 = rt.menuMan.createActionItem("FixEndLines", CATEGORY_MACRO)
     actionItem1 = rt.menuMan.createActionItem("Layers", CATEGORY_MACRO)
     actionItem2 = rt.menuMan.createActionItem("LODsHierarchy", CATEGORY_MACRO)
     actionItem3 = rt.menuMan.createActionItem("Nodes", CATEGORY_MACRO)
     actionItem4 = rt.menuMan.createActionItem("UniqueNames", CATEGORY_MACRO)
+    actionItem5 = rt.menuMan.createActionItem("RebuildNodes", CATEGORY_MACRO)
 
     FlightSimMenu = rt.menuMan.findMenu(CATEGORY_MACRO)
     if not FlightSimMenu:
@@ -52,6 +48,7 @@ def installMenu():
     sdkmenu.safeAddItem(PlaneValidationMenu, actionItem2)
     sdkmenu.safeAddItem(PlaneValidationMenu, actionItem3)
     sdkmenu.safeAddItem(PlaneValidationMenu, actionItem4)
+    sdkmenu.safeAddItem(PlaneValidationMenu, actionItem5)
     sdkmenu.safeAddItem(FlightSimMenu, PlaneValidationItem)
 
     rt.menuMan.updateMenuBar()

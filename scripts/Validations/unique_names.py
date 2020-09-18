@@ -7,8 +7,6 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
 
 import maxsdk.node as sdknode
-reload(sdknode)
-
 def run():
     warningList = []
     sceneNodes = map(lambda x: x.GetName(), sdknode.getChildren(MaxPlus.Core.GetRootNode()))

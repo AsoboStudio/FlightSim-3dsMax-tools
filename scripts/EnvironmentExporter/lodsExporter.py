@@ -7,12 +7,9 @@ import re
 import MaxPlus
 import os
 from maxsdk import userprop
-reload(userprop)
 from maxsdk import perforce as sdkperforce
 from maxsdk import dialog as sdkdialog
 import utils
-reload(utils)
-reload(sdkdialog)
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 
@@ -69,7 +66,7 @@ def deleteInvalidGLTF(flatName):
     targetGLTFFileName = flatName + ".gltf"
     targetBINFileName = flatName + ".bin"
     if os.path.exists(targetGLTFFileName) or os.path.exists(targetBINFileName):
-        print "found {0} to remove".format(flatName)
+        print("found {0} to remove".format(flatName))
         sdkperforce.P4delete(targetGLTFFileName)
         sdkperforce.P4delete(targetBINFileName)
 
@@ -119,7 +116,7 @@ def setLayerVisibility(root, visibility):
 def ExportLODinstance(exportPath, n, exportProgress):
     lodValue = float(userprop.getUserProp(n, "flightsim_lod_value", 0))
     if lodValue is None:
-        print "Missing Lod Value in node {0}".format(n.name)
+        print("Missing Lod Value in node {0}".format(n.name))
         return None
     utils.ExportEnvAsset(exportPath=exportPath, maxNode=n, exportProgress=exportProgress, flatten=True)
     return lodValue
@@ -136,7 +133,7 @@ def exportLODsLayer(item, exportProgress):
         return
 
     layerName = item.name
-    print "PROCESSING layer {0}".format(layerName)
+    print("PROCESSING layer {0}".format(layerName))
     layer = rt.LayerManager.getLayerFromName(layerName)
     layer.current = True
     setLayerVisibility(layer,True)

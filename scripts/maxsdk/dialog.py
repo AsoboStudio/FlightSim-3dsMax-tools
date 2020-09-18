@@ -1,9 +1,9 @@
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
-import MaxPlus
+from maxsdk.globals import *
 
 
 def showMessage(message):
     if message:
-        dialog = QMessageBox(text=message, parent=MaxPlus.GetQMaxMainWindow())
+        dialog = QMessageBox(text=message, parent=GetMaxMainWindow())
         dialog.show()
