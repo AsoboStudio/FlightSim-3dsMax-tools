@@ -44,16 +44,11 @@ set /P N= :
 
 	if not defined MSFS_SDK (
 		echo MSFS_SDK is NOT defined
-		goto noMSFS_SDK
-	)
-	else
-	(
+		echo No MSFS_SDK found... installing script in default Max installation folder		
+	) else (
+		echo MSFS_SDK is defined
 		set ScriptDir="%MSFS_SDK%\Tools\3dsMax\FlightSimPackage\scripts"
-		
 	)
-	:noMSFS_SDK
-	echo "No MSFS_SDK found... installing script in default Max installation folder"
-	
 
 :copy-objects	
 	echo :: Copying plug-in files
