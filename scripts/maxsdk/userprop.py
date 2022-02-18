@@ -12,7 +12,8 @@ def setUserProp(node, keyName, value):
         rt.setUserProp(node, keyName, str(value))
 
 
-def getUserProp(node, keyName, defaultValue = None):
+def getUserProp(node, keyName, defaultValue=None):
+    
     res = rt.getUserProp(node, keyName)
     if res != None:
         return res
@@ -21,6 +22,10 @@ def getUserProp(node, keyName, defaultValue = None):
 
 
 def dictToString(dictObj):
+    """Turns a dictionary into a string. 
+    Entries are separated by ; and key/values are separated by ~
+    \nexample = keyA\~valueA;keyB\~valueB;keyC\~valueC
+    """
     if isinstance(dictObj, dict):
         propertyValue = ""
         for i in range(len(dictObj.items())):
@@ -34,6 +39,8 @@ def dictToString(dictObj):
 
 
 def stringToDict(string):
+    """Turns a string to a dictionary and keeps every keys and values as string
+    """
     dictRes = dict()
     keyValue = string.split(";")
     for kv in keyValue:
@@ -43,6 +50,8 @@ def stringToDict(string):
     return dictRes
 
 def string_to_typed_dict(string):
+    """Turns a string to a dictionary and guesses the obvious types if possible
+    """
     dictRes = dict()
     keyValue = string.split(";")
     for kv in keyValue:
@@ -54,8 +63,7 @@ def string_to_typed_dict(string):
 
 
 def setUserPropHeadedDict(node, propName, nameDict):
-    """
-    headedDictionary = tuple(str, dict)
+    """headedDictionary = tuple(str, dict)
     """
     header = nameDict[0]
     dictObj = nameDict[1]
@@ -65,12 +73,12 @@ def setUserPropHeadedDict(node, propName, nameDict):
         setUserProp(node, propName, propertyValue)
 
 def getUserPropHeadedDict(node, propName):
-    '''
+    """
     reads the user property propName in the node and turns it into a tuple( header, dictionary ).\n 
     
     in: node=pymxs.MXSWrapperBase, propName=str, keyName=str\n 
     out: tuple(str,dict) 
-    '''
+    """
     res = getUserProp(node, propName)
     if res is not None:
         headless = res.split(";", 1)
@@ -86,6 +94,7 @@ def getUserPropHeadedDict(node, propName):
 
 
 def getUserPropDict(node, propName, keyName=None):
+    """If no keyname specified, returns the dictionary otherwise returns only the kay associated value as a string"""
     res = getUserProp(node, propName)
     dictRes = dict()
     try:
@@ -98,11 +107,15 @@ def getUserPropDict(node, propName, keyName=None):
         return dictRes
 
 def setUserPropDict(node, propName, dictObj):
+    """Set a dictionary in the user property of a node.
+    """
     if isinstance(dictObj, dict):
         propertyValue = dictToString(dictObj)
         setUserProp(node, propName, propertyValue)
 
 def setUserPropList(node, propName, listObj):
+    """Set a list in the user property of a node.
+    """
     if isinstance(listObj, list):
         propertyValue = ""
         objCount = len(listObj)
@@ -115,6 +128,8 @@ def setUserPropList(node, propName, listObj):
         rt.setUserProp(node, propName, propertyValue)
 
 def getUserPropList(node, propName):
+    """Get a list from the user property of a node
+    """
     res = rt.getUserProp(node, propName)
     if (res is None):
         return None
@@ -125,10 +140,27 @@ def getUserPropList(node, propName):
             listRes.append(v)
     return listRes
 
+def parseUserPropAsList(string):
+    """Get a list from a string. Member are separated by semi colon ;
+    """
+    res = string
+    if (res is None):
+        return None
+    listRes = list()    
+    values = res.split(";")
+    for v in values:
+        if (v != None and v != ""):            
+            listRes.append(v)
+    return listRes
+
 def removeUserProp(node, keyName):
+    """Removes a user property from a node
+    """
     rt.deleteUserProp(node, keyName)
     
 def getUserPropBuffer(node):
+    """Returns the complete user property buffer of an object
+    """
     propBuffer = rt.getUserPropBuffer(node)
     return propBuffer
 
@@ -141,6 +173,9 @@ def openUserPropertyWindow():
     rt.macros.run("ASOBO", "UserDefinedPlus")  # and open/reopen it to focus  
 
 def cleanupStringForPropListStorage(string):
+    """Remove all the non-ASCII character, tide and semicolon.
+    This function should be used before putting a string in the setUserPropList or setUserPropDict
+    """
     cleanString = str()
     for c in string:        
         if (ord(c) < 128) and c != ";" and c != "~":

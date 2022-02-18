@@ -1,4 +1,7 @@
-import MaxPlus
+from globals import *
+if MAXVERSION() < MAX2021:
+    import MaxPlus
+
 import pymxs
 
 rt = pymxs.runtime
@@ -128,3 +131,9 @@ def removeTransformKeys(node):
     removePositionKeys(node)
     removeRotationKeys(node)
     removeScaleKeys(node)
+
+def get_animTime():
+    if MAXVERSION() < MAX2017:
+        return MaxPlus.Animation.GetTime()
+    else:
+        return rt.sliderTime

@@ -1,10 +1,10 @@
 """
-This module contains function to handle layers in 3dsMax
+This module contains functions to handle layers in 3dsMax
 """
 
 import pymxs
 from maxsdk.globals import *
-if MAXVERSION() < MAX2021:
+if MAXVERSION() < MAX2017:
     import MaxPlus
 
 rt = pymxs.runtime
@@ -18,12 +18,17 @@ def getLayerChildren(root, result):
     \nin-out:
     result=list(MixinInterface.LayerProperties)
     """
-    if root is not None:
-        num_children = root.getNumChildren()
-        result.append(root)
-        for i in range(1, num_children + 1):
-            child = root.getChild(i)
-            getLayerChildren(child, result)
+    if root:
+        try:
+            num_children = root.getNumChildren()
+            result.append(root)
+            for i in range(1, num_children + 1):
+                child = root.getChild(i)
+                getLayerChildren(child, result)
+        except:
+            print("impossible to getLayerChildren of {}".format(root))
+
+
 
 def getLayerDescendants(roots):
     """
@@ -83,6 +88,7 @@ def getRootLayer(layer):
     else:
         return layer
 
+ 
 def getAllRootLayer():
     """
     Returns all the root layer in the scene. A root layer is a layer without any parent.
@@ -120,7 +126,22 @@ def getAllLayersMP():
         result.append(layer)
     return result
 
-def getAllNodeInLayerHierarchy(rootLayer):
+def get_layer(name):
+    if MAXVERSION() < MAX2017:
+        return MaxPlus.LayerManager.GetLayer(name)
+    else:
+        return rt.layermanager.getLayerFromName(name) #Pythonysation de maxscript
+
+def getAllNodeInLayerTree(layer):
+    result = []
+    descendants = []
+    getLayerChildren(layer,descendants)
+    for l in descendants:
+        for n in getDependentsOfLayer(l):
+            result.append(n)
+    return result
+
+def getAllNodeInLayerHierarchyMP(rootLayer):
     """
     Returns all node contained in a layer hierarchy.
 
@@ -138,6 +159,16 @@ def getAllNodeInLayerHierarchy(rootLayer):
         for n in lyr_nodes_children:
             result_list.append(n)
     return result_list
+
+def getAllNodeInLayerTree(layer):
+    result = []
+    descendants = []
+    getLayerChildren(layer,descendants)
+    for l in descendants:
+        for n in getDependentsOfLayer(l):
+            result.append(n)
+    return result
+
 
 def getDependentsOfLayer(lay):
     """
@@ -189,11 +220,31 @@ def getSelectedLayer():
         return
     selectedLayerName = layer[0].name
 
+    return (MaxPlus.LayerManager.GetLayer(selectedLayerName)) if (MAXVERSION() < MAX2017) else rt.layermanager.getLayerFromName(selectedLayerName)
+
+def getSelectedLayerMP():
+    """
+    Returns the first selected layer in the scene. Check first if an explorer is open, if so it will get these selected items. 
+
+    \nout: 
+    MaxPlus.Layer
+    """
+    explorer = rt.SceneExplorerManager.GetActiveExplorer()
+    if (explorer == None):
+        layer = rt.getCurrentSelection()
+    else:
+        layer = explorer.SelectedItems()
+    count = rt.getProperty(layer, "count")
+    if count <= 0:
+        rt.messageBox("Please select a layer")
+        return
+    selectedLayerName = layer[0].name
+
     return MaxPlus.LayerManager.GetLayer(selectedLayerName)
 
 def deleteAllEmptyLayerHierarchies():
     """
-    Attempts to delete all layers. Not empty ones are kept by 3dsMax automatically
+    Attempts to delete all layers. Non empty ones are kept by 3dsMax automatically
     """
     layers = getAllRootLayer()
     for lay in layers:
@@ -230,6 +281,9 @@ def enableThese(layers):
     """
     for layer in layers:
         _visibilityInHierarchy(layer, True)
+
+def enableTheseAndTheirDescendant(layers):
+    getLayerDescendants(layers)
 
 def disableThese(layers):
     """

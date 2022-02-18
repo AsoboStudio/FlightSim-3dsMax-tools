@@ -1,1 +1,1 @@
-
+print("imported maxsdk package")

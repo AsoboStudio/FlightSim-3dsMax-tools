@@ -1,5 +1,22 @@
 from pymxs import runtime as rt
+from .globals import *
 
+def deleteCategoryAndContentCustomizations(categoryName):
+    maxMenuBar = rt.menuMan.getMainMenuBar()
+    FlightSimMenu = rt.menuman.findmenu(categoryName)
+    if(FlightSimMenu is not None):
+        items = getAllItem(FlightSimMenu)
+        for item in items:
+            FlightSimMenu.removeItem(item)
+            print("removed {}".format(item.getTitle()))
+    deleteItemByName(maxMenuBar,categoryName)
+    rt.menuMan.updateMenuBar()
+
+    layerQuadMenu = rt.menuMan.findQuadMenu("LayerExplorer Quad")
+    for i in range(1,4):
+        lMenu = layerQuadMenu.getMenu(i)
+        deleteItemByName(lMenu, categoryName)
+        
 def deleteCategoryCustomizations(categoryName):
     """
     Delete all custom macro added by given category(menu,quad menu,toolbar,mouse,colors)
@@ -19,6 +36,19 @@ def getItemByName(maxMenu,name):
         if mItem and mItem.getTitle() == name:
             return mItem
     return None
+
+def getAllItem(maxMenu):
+    result = []
+    for i in range(1, maxMenu.numItems() + 1):
+        mItem = maxMenu.getItem(i)
+        result.append(mItem)
+        try:
+            subMenu = mItem.getSubMenu()
+            if(subMenu and subMenu.numItems() > 0):             
+                result += getAllItem(subMenu)
+        except Exception as e:
+            print(e)
+    return result
 
 
 def deleteItemByName(maxMenu, name):
@@ -81,3 +111,40 @@ def createMacroScript(_func, category="", name="", tool_tip="", button_text="", 
     )
     """.format(_func.__module__, func_name)
     rt.macros.new(category, name, tool_tip, button_text, script)
+
+
+
+def createMacroScriptQt(_module,_widget,_func, category="", name="", tool_tip="", button_text="", *args):
+    """Creates a macroscript"""
+    if tool_tip == "":
+        tool_tip = name
+    if button_text == "":
+        button_text = name
+
+    module_name = "{0}".format(_module.__name__)
+    class_name = "{0}".format(_widget.__name__)
+    func_name = "{0}".format(_func.__name__)
+
+    script = ""
+
+    if MAXVERSION() <= MAX2019:
+        script = """
+        (
+            python.Execute "from {} import *"
+            python.Execute "import MaxPlus"
+            python.Execute "ui = {}()"
+            python.Execute "MaxPlus.AttachQWidgetToMax(ui)"
+            python.Execute "ui.{}()"
+        )
+        """.format(module_name,class_name, func_name)
+    else:
+        script = """
+                (
+                    python.Execute "from {} import *"
+                    python.Execute "ui = {}()"
+                    python.Execute "ui.{}()"
+                )
+                """.format(module_name,class_name, func_name)
+
+    rt.macros.new(category, name, tool_tip, button_text, script)
+

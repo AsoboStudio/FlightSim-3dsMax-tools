@@ -4,14 +4,17 @@ Generic Python MaxPlus library
 import os
 import re
 from maxsdk.globals import *
-if MAXVERSION() < MAX2021:
+if MAXVERSION() < MAX2017:
     import MaxPlus
 
 import pymxs
 rt =pymxs.runtime
+import maxsdk.layer as layer
 
 
 def get_selection():
+    """Deprecated : Use sceneUtils.getSelectedObjects()
+    """
     return MaxPlus.SelectionManager.GetNodes()
 
 def evaluate_max_script_file(_filePath):
@@ -38,7 +41,7 @@ def set_parent_layer(mp_layer_source, mp_layer_target):
 
 
 def getAllNodes():
-    return GetChildren(MaxPlus.Core.GetRootNode())
+    return GetChildren(MaxPlus.Core.GetRootNode() if MAXVERSION() < MAX2017 else rt.rootNode)
 
 
 def GetChildren(node):
@@ -145,13 +148,9 @@ def CreateDummyHierarchy(root, dummyParent, prefix):
 
 
 def replace_node_prefix(n, prefix, new_prefix):
-    name = str(n.GetName())
+    name = str(n.name)
     name = name[:-5]
     name = name.replace(prefix, new_prefix)
-    # existent_node = MaxPlus.INode.GetINodeByName(name)
-    # if existent_node is not None:
-    #     print "{0} already exist,previous one ha been removed".format(name)
-    #     #MaxPlus.INode.Delete(existent_node)
     n.Name = name
 
 
@@ -167,21 +166,24 @@ def replace_layer_prefix(l, prefix, new_prefix):
 
 
 def clone_hierarchy(root, parent, func, lambda_list):
-    rt_old_node = rt.getNodeByName(root.GetName())
+    rt_old_node = rt.getNodeByName(root.name)
     rt_new_node = rt.copy(rt_old_node)
     # avoid copy with default 001 prefix
     rt_new_node.name = rt_old_node.name + "_temp"
-    new_node = MaxPlus.INode.GetINodeByName(rt_new_node.name)
+    new_node = MaxPlus.INode.GetINodeByName(rt_new_node.name) if MAXVERSION() < MAX2017 else rt.getNodeByName(rt_new_node.name)
     func(new_node)
-    new_node.SetParent(parent)
+    new_node.parent = parent
     for l in lambda_list:
         if l is not None:
             l(new_node)
 
+    childrens = root.children
+    num_children = childrens.Count
 
-    num_children = root.GetNumChildren()
+    rootChilds = root.children
     for i in range(0, num_children):
-        child = root.GetChild(i)
+        print(type(root))
+        child = rootChilds[i]
         clone_hierarchy(child, new_node, func, lambda_list)
 
 
@@ -484,13 +486,30 @@ def get_asobo_folder():
         os.makedirs(asobo)
     return asobo
 
-def attachToMax(widget):    
-    MaxPlus.AttachQWidgetToMax(widget)
-
-
 
 def convertRelativePathToAbsolute(relativePath, startingPath):
     return rt.pathConfig.resolvePathSymbols(os.path.join(startingPath, relativePath))
 
 def convertAbsolutePathToRelative(absolutePath, relativeTo):
     return rt.pathConfig.convertPathToRelativeTo(absolutePath, relativeTo)
+
+def getNodesFromPresetObject(PresetObject):
+    Layers = []
+    ResultNodes = []
+    for layn in PresetObject.layerNames:
+        Rlay = layer.get_layer(layn)
+        if Rlay != None:
+            Layers.append(Rlay)
+        else:
+            print("Can't get layer {0} it probably on't exist anymore in the scene".format(layn))
+    for lay in Layers:
+        if lay != None:
+            prel = layer.getNodesInLayer(lay)
+        if prel != None:
+            for pl in prel:
+                if rt.classOf(pl) == rt.Editable_Poly or rt.classOf(pl) == rt.Editable_Mesh or rt.classOf(pl) == rt.PolymeshObject:
+                    ResultNodes.append(pl)
+        else:
+            print("No Nodes in layer {0}".format(prel.name))
+    return ResultNodes
+    

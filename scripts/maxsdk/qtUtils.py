@@ -47,6 +47,8 @@ class ScrollMessageBox(QMessageBox):
 
 
 def truncateStringFromLeft(string, maxLength):
+    """Truncate a string from the left side until the string's length is less than maxLength
+    """
     stringLen = len(string)
     truncString = string[max(stringLen-maxLength, 0):stringLen]
     if (stringLen > maxLength):
@@ -57,6 +59,8 @@ def truncateStringFromLeft(string, maxLength):
 
 
 def createCheckBox(qtWidget, x=14, y=2, w=17, h=17):
+    """Adds a checkbox to a widget and returns a reference to it
+    """
     headerGeom = qtWidget.geometry()
     frameTopLeft = headerGeom.topLeft()
     fx = frameTopLeft.x()
@@ -72,6 +76,8 @@ def createCheckBox(qtWidget, x=14, y=2, w=17, h=17):
 
 
 def openSaveFileNameDialog(parent=None, caption="", _dir="", _filter="", forcedExtension=".gltf"):
+    """Opens a Save File dialog and returns the chosen path
+    """
     dialog = QFileDialog(parent, caption, _dir, _filter)
     dialog.setDirectory(_dir)
     if dialog.exec_() == 1:
@@ -85,8 +91,13 @@ def openSaveFileNameDialog(parent=None, caption="", _dir="", _filter="", forcedE
                 return filePath[0]
     return None
 
+def openSaveFolderPathDialog(_caption ="Choose a folder", _dir ="" ):
+    dialog = QFileDialog.getExistingDirectory(caption = _caption, dir = _dir)
+    return dialog
 
 def validateFloatLineEdit(x):
+    """ Turn a string into a float. Will replace comma by full stop if needed
+    """
     try:
         return float(x)
     except:
@@ -98,33 +109,45 @@ def validateFloatLineEdit(x):
     return None
 
 
-def getNewMessageBox(text, title=""):
+def _getNewMessageBox(text, title=""):
+    """Creates a message box and returns a reference to it
+    """
     msgBox = QMessageBox()
     msgBox.setWindowTitle(title)
     msgBox.setMaximumHeight(500)
     msgBox.setMaximumSize
     msgBox.setText(text)
+    flagsOnTop = Qt.WindowFlags(Qt.WindowStaysOnTopHint)
+    msgBox.setWindowFlags(flagsOnTop)
     return msgBox
 
 
 def popup(text, title=""):
-    msgBox = getNewMessageBox(text, title)
+    """Opens a message popup
+    """
+    msgBox = _getNewMessageBox(text, title)
     msgBox.exec_()
 
 
 def popup_detail(text, title="", detail=""):
-    msgBox = getNewMessageBox(text, title)
+    """Opens a message popup with a detail rollout
+    """
+    msgBox = _getNewMessageBox(text, title)
     msgBox.setDetailedText(detail)
     msgBox.exec_()
 
 
 def popup_scroll(text, title=""):
+    """Opens a message popup with a scrollbar
+    """
     msgBox = ScrollMessageBox(text=text, title=title)
     msgBox.exec_()
 
 
 def popup_Yes_No(text, title=""):
-    msgBox = getNewMessageBox(text, title)
+    """Opens a Yes or No message popup.
+    Returns True if yes is pressed"""
+    msgBox = _getNewMessageBox(text, title)
     buttons = QMessageBox.Yes | QMessageBox.No
     msgBox.setStandardButtons(buttons)
     msgBox.setButtonText(0, "lol")
@@ -136,7 +159,10 @@ def popup_Yes_No(text, title=""):
 
 
 def popup_Yes_YesToAll_No(text, title=""):
-    msgBox = getNewMessageBox(text, title)
+    """Opens a Yes YesToAll and No message popup
+    Returns 2 for yes, 1 for YesToAll and 0 for No
+    """
+    msgBox = _getNewMessageBox(text, title)
     buttons = QMessageBox.Yes | QMessageBox.YesToAll | QMessageBox.No
     msgBox.setStandardButtons(buttons)
     output = msgBox.exec_()
@@ -149,7 +175,10 @@ def popup_Yes_YesToAll_No(text, title=""):
 
 
 def popup_Yes_YesToAll_No_NoToAll(text, title=""):
-    msgBox = getNewMessageBox(text, title)
+    """Opens a Yes, YesToAll, No and NoToAll message popup.
+    Returns 3 for Yes, 2 for YesToAll, 1 for No and 0 for NoToAll
+    """
+    msgBox = _getNewMessageBox(text, title)
     buttons = QMessageBox.Yes | QMessageBox.YesToAll | QMessageBox.No | QMessageBox.NoToAll
     msgBox.setStandardButtons(buttons)
     output = msgBox.exec_()

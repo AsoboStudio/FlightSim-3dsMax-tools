@@ -1,8 +1,8 @@
 import unittest
-from maxsdk import sceneUtils, userprop
-reload(sceneUtils)
+import sceneUtils 
+import userprop
 from pymxs import runtime as rt
-from MultiExporter import multiExporter, constants
+from ..MultiExporter import multiExporter, constants
 
 class HierarchyTest(unittest.TestCase):
     @classmethod
@@ -17,20 +17,20 @@ class HierarchyTest(unittest.TestCase):
             fsc = rt.Box()
             fsc.name = "childNum{0}".format(i)
             fsc.parent = fc
-        print "setup Hierarchy"
+        print("setup Hierarchy")
 
     def test_gathering_function(self):
-        print "testing stuff"
+        print("testing stuff")
         allRoots = sceneUtils.getAllObjects()
         allScene = sceneUtils.getDescendantsOfMultiple(allRoots)
         roots = sceneUtils.getAllRoots(allScene)
         self.assertEqual(roots[0].name, "topParent", "not equal")
         reGetAll = sceneUtils.getDescendantsOfMultiple(roots)
         self.assertEqual(allScene, reGetAll, "not equal")
-        print type(allRoots[0])
+        print(type(allRoots[0]))
 
     def test_delete_function(self):
-        print "deleting stuff"
+        print("deleting stuff")
         self.assertEqual(1, 1, "is equal")
         
     @classmethod
@@ -78,7 +78,7 @@ class LODTest(unittest.TestCase):
         self.H.parent = self.GA
 
 
-        print "setup LOD"
+        print("setup LOD")
 
     def test_gathering_function(self):
         self.assertEqual(sceneUtils.getLODLevel(self.A),0, "lol")

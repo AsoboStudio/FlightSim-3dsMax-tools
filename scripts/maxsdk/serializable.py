@@ -1,7 +1,9 @@
-import MaxPlus
+from globals import *
+if MAXVERSION() < MAX2017:
+    import MaxPlus
+else:
+    from pymxs import runtime as rt
 import os
-import sys
-sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 import json_utility
 
 import utility as sdk_utility
@@ -33,7 +35,7 @@ class INodeEncoder(json.JSONEncoder):
     @staticmethod
     def decodeNode(data):
         name = data["name"]
-        node = MaxPlus.INode.GetINodeByName(name)
+        node = rt.getNodeByName(name) if (MAXVERSION() >= MAX2017) else MaxPlus.INode.GetINodeByName(name)
         if not node:
             print("Node: {0} not found".format(data["name"]))
             return
