@@ -59,7 +59,7 @@ set /P N= :
 	echo :: From: %SourceDir%
 	echo :: To: %DestDir%
 
-	robocopy "%~dp0\plugins\glTF-Exporter\3ds Max\Public\%_maxversion%" %DestDir%\bin\assemblies *.* /S /R:0
+	robocopy "%~dp0\plugins\glTF_Exporter\%_maxversion%" %DestDir%\bin\assemblies *.* /S /R:0
 	if errorlevel 8 goto ErrorCopyPlug
 
 	robocopy "%~dp0\startup" %DestDir%\scripts\Startup %StartupFile% FlightSim_SDK_Startup.ms /S
