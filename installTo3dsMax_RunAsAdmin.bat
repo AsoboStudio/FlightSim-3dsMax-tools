@@ -8,6 +8,7 @@ echo choose 3 for 2018
 echo choose 4 for 2019
 echo choose 5 for 2020
 echo choose 6 for 2021
+echo choose 7 for 2022
 set /P N= :
 
 :switch-case-maxversion
@@ -34,6 +35,9 @@ set /P N= :
 	goto define-location
   :switch-case-N-6
 	set _maxversion=2021
+	goto define-location
+  :switch-case-N-7
+	set _maxversion=2022
 	goto define-location
 
 :define-location
