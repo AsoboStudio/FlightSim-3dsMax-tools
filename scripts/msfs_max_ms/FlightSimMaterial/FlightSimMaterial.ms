@@ -474,7 +474,7 @@ version:0.1
 		detailUVOffsetX type:#float default:0.0 ui:detailUVOffsetX animatable:false
 		detailUVOffsetY type:#float default:0.0 ui:detailUVOffsetY animatable:false
 		detailNormalScale type:#float default:1.0 ui:detailNormalScale animatable:false
-		blendThreshold type:#float default:0.1 ui:blendThreshold animatable:false
+		blendThreshold type:#float default:0.0 ui:blendThreshold animatable:false
 		doubleSided type:#boolean default:false ui:doubleSided animatable:false
 
 		
@@ -488,7 +488,7 @@ version:0.1
 		parallaxScale type:#float default:0.0 ui:parallaxScale animatable:false
 		roomSizeXScale type:#float default:0.5 ui:roomSizeXScale animatable:false
 		roomSizeYScale type:#float default:0.5 ui:roomSizeYScale animatable:false
-		roomNumberXY type:#float default:1.0 ui:roomNumberXY animatable:false
+		roomNumberXY type:#float default:5.0 ui:roomNumberXY animatable:false
 		corridor type:#boolean default:false ui:corridor animatable:false
 		
 		glassReflectionMaskFactor type:#float default:1.0 ui:glassReflectionMaskFactor animatable:false
