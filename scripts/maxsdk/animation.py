@@ -1,4 +1,4 @@
-from globals import *
+from maxsdk.globals import *
 if MAXVERSION() < MAX2021:
     import MaxPlus
 

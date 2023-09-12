@@ -36,19 +36,33 @@ import MultiExporter.ui.mainwindow_ui as mainWindowUI
 
 from pymxs import runtime as rt
 
+
 import stat
 if MAXVERSION() >= MAX2021:
     from configparser import ConfigParser, RawConfigParser
 else:
     from ConfigParser import ConfigParser, RawConfigParser
 
-class MainWindow(QWidget, mainWindowUI.Ui_MultiExporter):
-    def __init__(self):
-        QWidget.__init__(self)
-        self.setupUi(self)
-        initialize()
 
-       
+
+class MainWindow(QMainWindow, mainWindowUI.Ui_MultiExporter):
+    def __init__(self, parent=None):
+        
+        parent=QWidget.find(rt.windows.getMAXHWND())
+        QMainWindow.__init__(self, parent)
+        self.setWindowTitle("MultiExporter")
+        
+        ## MainWidget for the MainWindow
+        self.mainWidget = QWidget()
+        self.setCentralWidget(self.mainWidget)   
+         
+        self.setupUi(self.mainWidget)
+
+        initialize()
+        self.initUI()
+        self.resize(1700, 900) 
+
+    def initUI(self):
         self.optionsMenuWindow = None
         
         # buttons
@@ -63,7 +77,9 @@ class MainWindow(QWidget, mainWindowUI.Ui_MultiExporter):
         font.setBold(False)
         self.btnRefresh.setFont(font)
         
-        self.btnRefresh.setText(u"\U0001F5D8")
+        # self.btnRefresh.setText(u"\U0001F5D8")
+        self.btnRefresh.setText("Refresh")
+        self.btnRefresh.setToolTip("Refresh tool")
         self.tabWidget.currentChanged.connect(self._changedTab)
         self.btnConformLayers.pressed.connect(self._clickedConformLayers)
         self.btnAddPreset.pressed.connect(self._clickedAddPreset)
@@ -73,6 +89,7 @@ class MainWindow(QWidget, mainWindowUI.Ui_MultiExporter):
         self.btnEditPresetPath.pressed.connect(self._clickedEditPresetPath)
         self.btnAddGroup.pressed.connect(self._clickedAddPresetGroup)
         self.btnApplyPresetEdit.pressed.connect(self._clickedApplyPresetEdit)
+        self.btnApplyPresetEdit.setEnabled(False)
 
         self.btnSavePresetConf.pressed.connect(self._clickedExportChekedPresetConf)
         self.btnImportPresetConf.pressed.connect(self._clickedImportPreset)
@@ -279,10 +296,43 @@ class MainWindow(QWidget, mainWindowUI.Ui_MultiExporter):
         self.conformSceneLayersToLODView(prompt=prompt)
 
     def _clickedGenerateXML(self, prompt=True):
-        categories = self.treeLODs.getSelectedCategory()
-        log = ""
-        count = len(categories)
-        i = 0
+
+        dlg = QMessageBox(self)
+        dlg.setWindowTitle("Generate XML")
+        dlg.setText("Do you want to generate an xml for a simobject ?")
+        dlg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        dlg.setIcon(QMessageBox.Question)
+        button = dlg.exec_()
+
+        if button == QMessageBox.Yes:
+            categories = self.treeLODs.getSelectedCategory()
+            log = ""
+            count = len(categories)
+            i = 0
+            if count > 0:
+                self.progressBar.setRange(0, count)
+                self.progressBar.setValue(0)
+                for category in categories:
+                    objects = self.treeLODs._baseNameDict[category]
+                    objects = sortObjectsByLODLevels(objects)
+                    metadataPath = exporter.getMetadataPath(objects[0])
+                    if (metadataPath is None or metadataPath == ".xml"):
+                        log += "\nERROR : No path on {0}. Skipping this XML file.".format(
+                            objects[0].name)
+                    else:
+                        log += exporter.createLODMetadataForSimObject(metadataPath, objects)
+                    i += 1
+                    self.progressBar.setValue(i)
+                if (log != ""):
+                    print(log)
+                    if prompt:
+                        qtUtils.popup_scroll(title="XML Generation Ouput", text=log)
+                        
+        else:
+        	categories = self.treeLODs.getSelectedCategory()
+        	log = ""
+        	count = len(categories)
+        	i = 0
         if count > 0:
             self.progressBar.setRange(0, count)
             self.progressBar.setValue(0)
@@ -473,7 +523,7 @@ class MainWindow(QWidget, mainWindowUI.Ui_MultiExporter):
                     expPathRoot = qtUtils.openSaveFolderPathDialog(_caption="Common Export Path for Duplication ", _dir=initDir)
             for preset in presets:            
                 targetGroup = preset.group
-                if groupTransfer.has_key(targetGroup):
+                if targetGroup in groupTransfer:
                     targetGroup = groupTransfer[targetGroup]
                 filepath = preset.path
                 if r:
@@ -583,7 +633,7 @@ class MainWindow(QWidget, mainWindowUI.Ui_MultiExporter):
             self.btnApplyPresetLayer.setText("Apply")
             self.presetParamName.setText(str(preset.name))
             paramDict = optionPreset.get()[1]
-            exportedSelectionBehaviour = "babylonjs_mergecontainersandxref" in paramDict and paramDict["babylonjs_mergecontainersandxref"] == True
+            exportedSelectionBehaviour = "babylonjs_mergecontainersandxref" in paramDict.keys() and paramDict["babylonjs_mergecontainersandxref"] == True
             self.treeLayer.setExportedSelectionBehaviour(exportedSelectionBehaviour)
         else:
             self.treeLayer.uncheckAllLayers()
@@ -598,12 +648,15 @@ class MainWindow(QWidget, mainWindowUI.Ui_MultiExporter):
             self.treeLayer.setEnabled(False)
             optionPreset = self.cbOptionPreset.itemData(optionIndex)
             for group in groups:
-                if optionIndex > 0:                        
+                if optionIndex > -1:                        
                     group.edit(optionPreset=optionPreset.identifier)
                 if txt != "-":
                     group.edit(name=txt)            
         else:
+            ## TODO -- See if this is useless
             selectedPresets = self.treePresets.getSelectedPresets()
+            if(len(selectedPresets) > 0):
+                rt.messageBox("Option presets are applied to groups, please select a group.")
             for preset in selectedPresets:
                 preset.edit(name=txt)
         self.refreshTool()
@@ -807,10 +860,17 @@ class MainWindow(QWidget, mainWindowUI.Ui_MultiExporter):
         exportParametersWithSceneModifications = []
         for preset, optionPreset in presetsAndOptions:
             assetFilePath = convertRelativePathToAbsolute(preset.path, rt.pathConfig.getCurrentProjectFolder())
+            ##Log
+            
             param = BabylonParameters(assetFilePath, "gltf")
-            if optionPreset is not None:
+            if optionPreset != None:
                 param = applyOptionPresetToBabylonParam(optionPreset, param)
                 param.exportLayers = preset.layerNames
+            else:
+                rt.messageBox("There is no option preset applied to this group, please select one.")
+                return
+            
+
             try:
                 relativeTextureFolder = param.textureFolder[1:] if (param.textureFolder[:1] == "\\") else param.textureFolder
                 param.textureFolder = convertRelativePathToAbsolute(relativeTextureFolder, rt.pathConfig.getCurrentProjectFolder())
@@ -829,6 +889,7 @@ class MainWindow(QWidget, mainWindowUI.Ui_MultiExporter):
                 for exp in exportParametersWithSceneModifications:
                     runBabylonExporter(exp)
                     self.checkoutGLTF(exp.outputPath)
+                    ## TODO check if this causes viewport conf
                 if not param.applyPreprocessToScene:
                     rt.fetchMaxFile(quiet = True)
             else:
@@ -992,3 +1053,10 @@ def initialize(prompt=True, skip_conversion=False):
         # eventually we could move the conversion to a separate tool if required in the future
         # convertOldScene(skip_conversion) 
         initializeBabylonExport()
+        
+window = None
+
+def show():
+    global window
+    window = MainWindow()
+    window.show()

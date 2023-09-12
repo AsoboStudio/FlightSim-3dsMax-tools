@@ -1,4 +1,6 @@
-import MaxPlus
+from globals import *
+if MAXVERSION() < MAX2021:
+    import MaxPlus
 
 def encodePositionController(controller):
     num_keys = controller.GetNumKeys()

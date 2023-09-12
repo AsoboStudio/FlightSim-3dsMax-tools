@@ -41,7 +41,12 @@ class BabylonParameters:
     removeLodPrefix = None  #True
     keepInstances = None  #False
     tangentSpaceConvention = None  #0
+
+    exportAsSubmodel = None #False
+
+
     mergeAOWithMR = None #False
+
 
 
     def __init__(self, outputPath, outputFormat):
@@ -67,10 +72,14 @@ propertyToDefault = {
     "flightsim_flattenGroups": False,    
     "babylonjs_writetextures": False,
     "babylonjs_mergeAOwithMR": False,
+
     "flightsim_keepInstances": False,    
     #"babylonjs_flattenScene": False,
     "babylonjs_asb_animation_retargeting": True,
-    "flightsim_asb_unique_id": True
+    "flightsim_asb_unique_id": True,
+    "babylonjs_onlySelected": False,
+
+    "flightsim_exportAsSubmodel": False
 }
 
 babylonParameters = [
@@ -93,10 +102,13 @@ babylonParameters = [
     "babylonjs_writetextures",
     "babylonjs_overwritetextures",
     "babylonjs_mergeAOwithMR",
+
     "flightsim_keepInstances",
     "babylonjs_export_animations_type",
     "babylonjs_txtScaleFactor",
-    "textureFolderPathProperty"
+    "textureFolderPathProperty",
+    "babylonjs_onlySelected",
+    "flightsim_exportAsSubmodel"
 ]
   
 def applyOptionPresetToBabylonParam(optionPreset, babylonParam):
@@ -128,8 +140,12 @@ def applyOptionPresetToBabylonParam(optionPreset, babylonParam):
     babylonParam.keepInstances = getBabylonParamFromDict(properties,"flightsim_keepInstances")
     babylonParam.tangentSpaceConvention = getBabylonParamFromDict(properties,"flightsim_tangent_space_convention")
     babylonParam.mergeAOWithMR = getBabylonParamFromDict(properties,"babylonjs_mergeAOwithMR")
+
     babylonParam.textureFolder = getBabylonParamFromDict(properties,"textureFolderPathProperty")
     babylonParam.flattenGroups = getBabylonParamFromDict(properties,"flightsim_flattenGroups")
+    babylonParam.exportOnlySelected = getBabylonParamFromDict(properties,"babylonjs_onlySelected")
+    babylonParam.exportAsSubmodel = getBabylonParamFromDict(properties, "flightsim_exportAsSubmodel")
+
     return babylonParam
 
 def getBabylonParamFromDict(_dict, _prop):
@@ -229,7 +245,11 @@ def setRTParameters(babylonParameters):
         rt.param.removeLodPrefix = __overwriteIfSet(rt.param.removeLodPrefix, babylonParameters.removeLodPrefix)
         rt.param.keepInstances = __overwriteIfSet(rt.param.keepInstances, babylonParameters.keepInstances)
         rt.param.tangentSpaceConvention = __overwriteIfSet(rt.param.tangentSpaceConvention, babylonParameters.tangentSpaceConvention)
+        rt.param.exportOnlySelected = __overwriteIfSet(rt.param.exportOnlySelected, babylonParameters.exportOnlySelected)
+        rt.param.exportAsSubmodel = __overwriteIfSet(rt.param.exportAsSubmodel, babylonParameters.exportAsSubmodel)
+
         rt.param.mergeAOWithMR = __overwriteIfSet(rt.param.mergeAOWithMR, babylonParameters.mergeAOWithMR)
+
 
 
 def _runBabylonAction(action, successMsg):

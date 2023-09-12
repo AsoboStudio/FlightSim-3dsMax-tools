@@ -4,7 +4,7 @@ This module contains functions to handle layers in 3dsMax
 
 import pymxs
 from maxsdk.globals import *
-if MAXVERSION() < MAX2017:
+if MAXVERSION() < MAX2021:
     import MaxPlus
 
 rt = pymxs.runtime

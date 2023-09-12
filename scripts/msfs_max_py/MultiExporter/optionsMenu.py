@@ -20,6 +20,8 @@ from maxsdk import qtUtils, sceneUtils, userprop, utility
 from pymxs import runtime as rt
 from maxsdk.globals import *
 
+from MultiExporter.presetUtils import GroupObject
+
 APPLY_UPTODATE = "Save"
 APPLY_OUTDATED = "Save*"
 
@@ -95,30 +97,38 @@ class ComboBoxOptionPreset(QComboBox):
     def _intializeContent(self):
         self.clear()
         self.presetObjectList = []
+
         optionPresetList = userprop.getUserPropList(
             sceneUtils.getSceneRootNode(), const.PROP_OPTIONS_LIST)
+
         if optionPresetList is None:
             optionPresetList = list()
+
         if len(optionPresetList) > 0:
             defaultPresetId = optionPresetList[0]
         else:
             defaultPresetId = const.PROP_OPTIONS_ENTRY_PREFIX.format(uuid.uuid4())
+
         defaultPreset = presetUtils.OptionPresetObject(
             defaultPresetId, listStorage=const.PROP_OPTIONS_LIST)
         defaultPreset.create("default", getCurrentSettingsAsDict())
+
         self.presetObjectList.append(defaultPreset)           
+
         for i in range(1,len(optionPresetList)):
             option = optionPresetList[i]
             preset = presetUtils.OptionPresetObject(
                 option, const.PROP_OPTIONS_LIST)
             self.presetObjectList.append(preset)            
+
         for item in self.presetObjectList:
             self.addItem(item.name, item)
 
     def refresh(self):
         self._intializeContent()
 
-    def addPreset(self, name):
+    def addPreset(self):
+        name = "NewOptionPreset" + str(self.count() - 1)
         presetId = const.PROP_OPTIONS_ENTRY_PREFIX.format(uuid.uuid4())
         preset = presetUtils.OptionPresetObject(presetId, listStorage=const.PROP_OPTIONS_LIST)        
         preset.create(name, getCurrentSettingsAsDict())
@@ -126,6 +136,36 @@ class ComboBoxOptionPreset(QComboBox):
         self.addItem(preset.name, preset)
         self.setCurrentIndex(self.count() - 1)
         self.onModifiedData.emit()
+
+    def removePreset(self):
+        curIndex = self.currentIndex()
+
+        if(len(self.presetObjectList) > 0 and curIndex > 0): # if list is not empty and item != default
+            
+            optionPresetList = userprop.getUserPropList(
+            sceneUtils.getSceneRootNode(), const.PROP_OPTIONS_LIST)
+
+            ## update option preset for the removed option preset and set it to default
+            groupList = userprop.getUserPropList(sceneUtils.getSceneRootNode(), const.PROP_PRESET_GROUP_LIST)
+            groups = []
+            if groupList is not None:
+                for groupID in groupList:
+                    g = GroupObject(groupID)
+                    groups.append(g)
+                    
+            optionPreset = self.itemData(curIndex)
+            for i in range (0, len(groups)):
+                if(groups[i].optionPreset == optionPreset.identifier):
+                    groups[i].edit(optionPreset= optionPresetList[0])
+            
+                    
+            ## pop option preset from the saved option preset list and the items            
+            optionPresetList.pop(curIndex)
+            userprop.setUserPropList(sceneUtils.getSceneRootNode(), const.PROP_OPTIONS_LIST, optionPresetList)
+
+            self.presetObjectList.pop(curIndex)
+            self.removeItem(curIndex)
+            self.onModifiedData.emit()
     
     def _renamedCurrent(self):
         currentID = self.currentIndex()
@@ -161,6 +201,7 @@ class OptionsMenu(QDialog, settingsWindowUI.Ui_settingsWindow):
 
         # PRESET BUTTONS
         self.btnAddOptionPreset.clicked.connect(self._clickedAddOptionPreset)
+        self.btnRemoveOptionPreset.clicked.connect(self._clickedRemoveOptionPreset)
         self.btnBrowseTexture.clicked.connect(self._browseTexturePath)
         self.lineTextureQuality.setValidator(QIntValidator())
 
@@ -183,7 +224,6 @@ class OptionsMenu(QDialog, settingsWindowUI.Ui_settingsWindow):
             self.lineTextureQuality: "babylonjs_txtCompression",
             self.cbWriteTextures: "babylonjs_writetextures",
             self.cbOverwriteTexture: "babylonjs_overwritetextures",
-            self.cbMergeAO: "babylonjs_mergeAOwithMR",
             self.cbKeepInstances: "flightsim_keepInstances",
             self.cbFlattenGroups: "flightsim_flattenGroups"
         }
@@ -225,14 +265,19 @@ class OptionsMenu(QDialog, settingsWindowUI.Ui_settingsWindow):
         path = rt.getSavePath(caption="Export Path", initialDir=os.path.join(rt.pathConfig.getCurrentProjectFolder(),self.lineTexturePath.text()))
         if(path != None):
             path = utility.convertAbsolutePathToRelative(path, rt.pathConfig.getCurrentProjectFolder())
-            if (path[0] == '.'):
-                path = path[1:len(path)]
+            # if (path[0] == '.'):
+            #     path = path[1:len(path)]
             self.lineTexturePath.setText(path)
             self.lineTexturePath.textEdited.emit("")
 
 
     def _clickedAddOptionPreset(self):
-        self.comboOptionPreset.addPreset("NewPreset")
+        self.comboOptionPreset.addPreset()
+
+    
+    def _clickedRemoveOptionPreset(self):
+        self.comboOptionPreset.removePreset()
+        
 
     def changedOption(self):
         self.madeChanges = True
@@ -289,7 +334,7 @@ class OptionsMenu(QDialog, settingsWindowUI.Ui_settingsWindow):
             prop = self.widgetToProperty[widget]
             state = None
             if dictObj is not None:
-                if dictObj.has_key(prop):
+                if prop in dictObj:
                     state = dictObj[prop]                   
             if state is None:
                 state = userprop.getUserProp(sceneRoot, prop)
@@ -313,7 +358,7 @@ class OptionsMenu(QDialog, settingsWindowUI.Ui_settingsWindow):
             state = userprop.getUserProp(sceneRoot, prop)
             #INITIALIZE
             if dictObj is not None:
-                if dictObj.has_key(prop):
+                if prop in dictObj:
                     state = dictObj[prop]    
             if (state is None):
                 state = getPropertyDefaultValue(prop)

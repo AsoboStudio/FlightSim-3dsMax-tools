@@ -521,7 +521,7 @@ rollout MaterialsTools "Materials Tools"
 			for mat in (getClassInstances PhysicalMaterial) do			--pour tous les matos
 			(
 				new_FSmat = FlightSim()
-				new_FSmat.basecolorTex = mat.mapM1.filename
+				if mat.mapM1 != undefined then	new_FSmat.basecolorTex = mat.mapM1.filename
 				if mat.bumpmap != undefined then	new_FSmat.NormalTex = mat.bumpmap.normal_map.filename
 				new_FSmat.name = mat.name
 				replaceinstances mat new_FSmat

@@ -128,8 +128,10 @@ class TreeViewPreset(TreeView):
 
     def startEditingSelectedItem(self):
         items = self.getSelectedQtItems()
+
         if (len(items) > 0):
             self.editItem(items[0], 0)
+            self.hasChanged.emit()
 
     def createTree(self):
         self.clearSelection()

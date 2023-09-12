@@ -380,6 +380,64 @@ def createLODMetadata(xmlPath, objects):
     log += successLog if xmlLog == "" else xmlLog
     return log
 
+def createLODMetadataForSimObject(xmlPath, objects):
+    """Create a single xml file for the list of objects. Objects are sorted based on their LOD level and their values are written in the xmlFile
+
+    \nin: 
+          xmlPath= str
+          objects= list(pymxs.MXSWrapperBase)
+    \nout:
+          log= str
+    """
+    log = ""
+    if (not os.path.isdir(os.path.split(xmlPath)[0])):
+        return "\nERROR : The output path for the xml is invalid, you probably need to save your max file and redo the export path."
+    if(not xmlPath):
+        return "\nERROR : Can't create metadata path for {0} Check your object's export path".format(objects[0].name)
+    if(os.path.exists(xmlPath)):  # if xml already exist parse it
+        xml = open(xmlPath, "r")
+        modelInfo = ET.fromstring(xml.read())
+        methodUsed = "updated"
+    else:  # otherwise create it
+        modelInfo = ET.Element("ModelInfo")
+        # assigned new guid
+        modelInfo.set("guid", "{" + str(uuid.uuid4()) + "}")
+        modelInfo.set("version", "1.1")
+        methodUsed = "created"
+
+    lods = modelInfo.find("LODS")  # find the registered LODs
+    if(lods is not None):  # if found delete them
+        modelInfo.remove(lods)
+    objectToSort = sceneUtils.filterLODLevel(objects, "[0-9]+")
+    sortedObjects = sceneUtils.sortObjectsByLODLevels(
+        objectToSort)  # sort object by lod levels
+    lodCount = len(objectToSort)
+    flatName = os.path.splitext(xmlPath)[0]
+    categoryName = os.path.split(flatName)[1]
+
+    if (len(sortedObjects) != 0):  # if we found LODs register them
+        if (sceneUtils.getLODLevel(sortedObjects[0]) != 0):
+            log += "\nERROR : Can't create metadata if {0} doesn't have a LOD0.".format(
+                sortedObjects[0].name)
+            return log
+        lodsElement = ET.SubElement(modelInfo, "LODS")
+        for obj in sortedObjects:
+            lod = ET.SubElement(lodsElement, "LOD")
+            lodValue = sceneUtils.getLODValue(obj)
+            if(lodValue == None):  # if no valid LOD Value found pick a default value
+                lodValue = sceneUtils.getDefaultLODValue(
+                    sceneUtils.getLODLevel(obj))
+                log += "\nWARNING : Couldn't find lod value on {0} it will use the default value {1}".format(
+                    obj.name, lodValue)
+            lod.set("MinSize", str(lodValue))
+            lod.set("ModelFile", str(obj.name))
+        # if we have LODs in the file we check if there is an old object before the lods and delete it
+        markForDeleteObsoleteGLTF(flatName)
+    xmlLog = writeXML(xmlPath, modelInfo)
+    successLog = "\nSuccesfully {0} XML file for {1}. It contains {2} LODs".format(methodUsed, categoryName, lodCount)
+    log += successLog if xmlLog == "" else xmlLog
+    return log
+
 
 def updateSingleMetadataLODValue(xmlPath, lodLevel, lodValue):
     """Update a single value in the xml file depending on the LodLevel. If the lodLevel is above the number of LODs already in the XML the update will fail.
@@ -404,7 +462,7 @@ def updateSingleMetadataLODValue(xmlPath, lodLevel, lodValue):
         lodValue = sceneUtils.getDefaultLODValue(lodLevel)
         log += "\nWARNING : Couldn't find lod value for LOD{0}. The default value {1} will be used".format(
             lodLevel, lodValue)
-    lods[lodLevel].set("minSize", str(lodValue))
+    lods[lodLevel].set("MinSize", str(lodValue))
     log += writeXML(xmlPath, root)
     return log
 
@@ -420,7 +478,7 @@ def writeXML(xmlPath, root):
     """
     output = ET.tostring(root)
     xmlstr = minidom.parseString(output).toprettyxml(
-        encoding='utf-8', indent="   ")
+        encoding='utf-8', indent="   ").decode("utf-8")
     dom_string = os.linesep.join([s for s in xmlstr.splitlines() if s.strip()])
     exists = os.path.exists(xmlPath)
     sdkperforce.P4edit(xmlPath)

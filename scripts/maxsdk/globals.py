@@ -2,6 +2,8 @@ import pymxs
 
 rt = pymxs.runtime
 
+MAX2023 = 25000
+MAX2022 = 24000
 MAX2021 = 23000
 MAX2020 = 22000
 MAX2019 = 21000

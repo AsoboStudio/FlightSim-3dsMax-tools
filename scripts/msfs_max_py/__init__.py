@@ -20,7 +20,7 @@ if not IS_PUBLIC_SDK:
         configur.read(os.path.join(c,'internal_tools.ini'))
         internal_modules = [] 
         for k in configur["INTERNAL"]:
-            internal_modules.append(configur["INTERNAL"].get(k))
+            internal_modules.append(configur["INTERNAL"].get(k).replace('"',''))
     else:
         from ConfigParser import RawConfigParser
         configur = RawConfigParser()
@@ -37,7 +37,7 @@ if isMAX2019V3_SUP():
     import ModeldefConverter
     import PBRViewportManager
     
-    if MAXVERSION() < MAX2021 and not IS_PUBLIC_SDK:
+    if MAXVERSION() < MAX2023 and not IS_PUBLIC_SDK:
         for module in internal_modules:
             importlib.import_module(module)
 

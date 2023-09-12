@@ -1,5 +1,7 @@
-import MaxPlus
-import node as sdk_node
+from maxsdk.globals import *
+if MAXVERSION() < MAX2021:
+    import MaxPlus
+from . import node as sdk_node
 
 
 def add_bone_to_skin_modifier_of_selected_node(bone):

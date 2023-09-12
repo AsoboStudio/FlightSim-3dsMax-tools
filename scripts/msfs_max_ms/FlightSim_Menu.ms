@@ -20,6 +20,11 @@ macroScript FlightSimEnvironmentLODsTools category:"FlightSim" buttontext:"Envir
     filein	(pathConfig.appendPath FlightSimPluginPath @"FlightSim_EnvironmentLODsTools.ms")
 )
 
+macroScript FlightSim_DisplayUvShellBorder category:"FlightSim" buttontext:"Display Uv Shell Border" tooltip:"Display Uv Shell Border"
+(
+    filein	(pathConfig.appendPath FlightSimPluginPath @"FlightSim_DisplayUvShellBorder.ms")
+)
+
 
 (
 	local FlightSimMenu = menuMan.findMenu "FlightSim"
@@ -42,6 +47,7 @@ macroScript FlightSimEnvironmentLODsTools category:"FlightSim" buttontext:"Envir
 	FlightSimMenu.addItem (menuMan.createActionItem "FlightSimEnvironmentLODsTools" "FlightSim") -1
 	FlightSimMenu.addItem (menuMan.createActionItem "FlightSimMaterialsTools" "FlightSim") -1
 	FlightSimMenu.addItem (menuMan.createActionItem "FlightSimObjectRenamer" "FlightSim") -1
+	FlightSimMenu.addItem (menuMan.createActionItem "FlightSim_DisplayUvShellBorder" "FlightSim") -1
 
 	babylonUtilitiesSubMenu.addItem (menuMan.createActionItem "CreateAnimationGroupFromSelection" "FlightSim") -1
 

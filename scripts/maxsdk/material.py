@@ -1,5 +1,5 @@
 from pymxs import runtime as rt
-import node
+from . import node
 
 def GetSceneMatByName(matName):
     SceneMats = []
